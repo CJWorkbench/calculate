@@ -1,0 +1,99 @@
+{
+ "name": "Calculate",
+ "id_name": "calculate",
+ "category" : "Analyze",
+ "description" : "Add, subtract, multiply, divide, minimum, maximum, and percentages on rows or columns",
+ "help_url": "https://github.com/cjworkbench/hello-workbench",
+ "parameters": [
+        {
+            "name": "Select operation",
+            "id_name": "operation",
+            "type": "menu",
+            "menu_items" : "Add|Subtract|Multiply|Divide||Average|Median|Minimum|Maximum||Percentage change|X percent of Y|X is what percent of Y",
+            "default" : "0"
+        },
+        {
+            "name": "",
+            "id_name": "colnames",
+            "type": "multicolumn",
+            "visible_if" : {
+                "id_name" : "operation",
+                "value" : "Add|Multiply|Average|Median|Minimum|Maximum"
+            }
+        },
+        {
+            "name": "Old value",
+            "type":"statictext",
+            "id_name":"oldvaluetext",
+            "visible_if":{
+                "id_name" : "operation",
+                "value":"Percentage change"
+            }
+        },        
+        {
+            "name": "X",
+            "type":"statictext",
+            "id_name":"xtext",
+            "visible_if":{
+                "id_name" : "operation",
+                "value":"X percent of Y|X is what percent of Y"
+            }
+        },        
+        {
+            "name": "",
+            "id_name": "col1",
+            "type": "column",
+            "visible_if" : {
+                "id_name" : "operation",
+                "value" : "Add|Multiply|Average|Median|Minimum|Maximum",
+                "invert": true
+            }
+        },
+        {
+            "name": "minus",
+            "type":"statictext",
+            "id_name":"subtracttext",
+            "visible_if":{
+                "id_name" : "operation",
+                "value":"Subtract"
+            }
+        },
+        {
+            "name": "by",
+            "type":"statictext",
+            "id_name":"dividetext",
+            "visible_if":{
+                "id_name" : "operation",
+                "value":"Divide"
+            }
+        },
+        {
+            "name": "New value",
+            "type":"statictext",
+            "id_name":"newvaluetext",
+            "visible_if":{
+                "id_name" : "operation",
+                "value":"Percentage change"
+            }
+        },        
+        {
+            "name": "Y",
+            "type":"statictext",
+            "id_name":"ytext",
+            "visible_if":{
+                "id_name" : "operation",
+                "value":"X percent of Y|X is what percent of Y"
+            }
+        },        
+        {
+            "name": "",
+            "id_name": "col2",
+            "type": "column",
+            "visible_if" : {
+                "id_name" : "operation",
+                "value" : "Add|Multiply|Average|Median|Minimum|Maximum",
+                "invert": true
+            }
+        }
+    ]
+}
