@@ -9,7 +9,7 @@ op_functions = {
     'Median' : 'median',
     'Minimum' : 'min',
     'Maximum' : 'max',
-    'Percentage change' : lambda x,y: (x-y)/y,
+    'Percentage change' : lambda x,y: (y-x)/x,
     'X percent of Y' : lambda x,y: x*y,
     'X is what percent of Y' : lambda x,y: x/y
     }
