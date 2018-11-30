@@ -2,6 +2,7 @@
  "name": "Calculate",
  "id_name": "calculate",
  "category" : "Analyze",
+ "icon" : "calculator",
  "description" : "Add, subtract, multiply, divide, minimum, maximum, and percentages on rows or columns",
  "help_url": "https://github.com/cjworkbench/hello-workbench",
  "parameters": [
