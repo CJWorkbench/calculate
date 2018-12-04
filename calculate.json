@@ -3,14 +3,14 @@
  "id_name": "calculate",
  "category" : "Analyze",
  "icon" : "calculator",
- "description" : "Add, subtract, multiply, divide, minimum, maximum, and percentages between columns",
+ "description" : "Add, subtract, multiply, divide, minimum, maximum, average, median, and percentages between columns",
  "help_url": "https://github.com/cjworkbench/hello-workbench",
  "parameters": [
         {
             "name": "Select operation",
             "id_name": "operation",
             "type": "menu",
-            "menu_items" : "Add|Subtract|Multiply|Divide||Average|Median|Minimum|Maximum||Percentage change|X percent of Y|X is what percent of Y",
+            "menu_items" : "Sum|Subtract|Multiply|Divide||Average|Median|Minimum|Maximum||Percentage change|X percent of Y|X is what percent of Y",
             "default" : "0"
         },
         {
@@ -19,9 +19,66 @@
             "type": "multicolumn",
             "visible_if" : {
                 "id_name" : "operation",
-                "value" : "Add|Multiply|Average|Median|Minimum|Maximum"
+                "value" : "Sum|Multiply|Average|Median|Minimum|Maximum"
             }
         },
+        {
+            "name": "then add",
+            "type":"statictext",
+            "id_name":"add_additional",
+            "visible_if":{
+                "id_name" : "operation",
+                "value":"Sum"
+            }
+        },        
+        {
+            "name": "then multiply by",
+            "type":"statictext",
+            "id_name":"multiply_additional",
+            "visible_if":{
+                "id_name" : "operation",
+                "value":"Multiply"
+            }
+        },        
+        {
+            "id_name":"single_value_selector",
+            "name": "",
+            "type":"menu",
+            "menu_items": "(none)|Cell value|Constant value",
+            "visible_if":{
+                "id_name" : "operation",
+                "value":"Sum|Multiply"
+            }
+        },        
+        {
+            "id_name":"single_value_col",
+            "name":"Column",
+            "type":"column",
+            "visible_if":{
+                "id_name" : "single_value_selector",
+                "value":"Cell value"
+            }
+        },        
+        {
+            "id_name":"single_value_row",
+            "name":"Row",
+            "type":"integer",
+            "default":1,
+            "visible_if":{
+                "id_name" : "single_value_selector",
+                "value":"Cell value"
+            }
+        },        
+        {
+            "id_name":"single_value_constant",
+            "name":"Value",
+            "type":"float",
+            "default":1,
+            "visible_if":{
+                "id_name" : "single_value_selector",
+                "value":"Constant value"
+            }
+        },        
         {
             "name": "Old value",
             "type":"statictext",
@@ -46,7 +103,7 @@
             "type": "column",
             "visible_if" : {
                 "id_name" : "operation",
-                "value" : "Add|Multiply|Average|Median|Minimum|Maximum",
+                "value" : "Sum|Multiply|Average|Median|Minimum|Maximum",
                 "invert": true
             }
         },
@@ -92,7 +149,7 @@
             "type": "column",
             "visible_if" : {
                 "id_name" : "operation",
-                "value" : "Add|Multiply|Average|Median|Minimum|Maximum",
+                "value" : "Sum|Multiply|Average|Median|Minimum|Maximum",
                 "invert": true
             }
         }

@@ -1,7 +1,7 @@
 from pandas.api.types import is_numeric_dtype
 
 op_functions = {
-    'Add' : 'sum',
+    'Sum' : 'sum',
     'Subtract' : lambda x,y: x-y,
     'Multiply' : 'product',
     'Divide' : lambda x,y: x/y,
@@ -15,7 +15,7 @@ op_functions = {
     }
 
 op_result_names = {
-    'Add' : 'Sum of',
+    'Sum' : 'Sum of',
     'Subtract' : '{col1} minus {col2}',
     'Multiply' : 'Product of',
     'Divide' : '{col1} divided by {col2}',
@@ -29,7 +29,7 @@ op_result_names = {
     }
 
 # Operations which take an arbitrary number of columns
-multicolumn_ops = ['Add','Multiply','Average','Median','Minimum','Maximum']
+multicolumn_ops = ['Sum','Multiply','Average','Median','Minimum','Maximum']
 
 # Formatters to produce result column names
 def format_two_cols(fstring, col1, col2):
@@ -41,9 +41,24 @@ def format_multicols(prefix_string, cols):
     else:
         return prefix_string + ' {num} columns'.format(num=len(cols))
 
+# Return the single value the user is specifying, either a cell value or constant
+def get_single_value(table, params):
+
+    if params['single_value_selector'] == 1: # 'Cell value'
+        col = params['single_value_col']
+        row = int(params['single_value_row'])-1 # go from 1-based in the UI to 0 based in the table
+        if row<0:
+            return "Row number cannot be less than 1"
+        elif row >= table.shape[0]:
+            return "Row number cannot be greater than " + str(table.shape[0])
+        return float(table[col][row])
+
+    else:
+        return float(params['single_value_constant'])
+
 
 def render(table, params):
-    operation_strings = 'Add|Subtract|Multiply|Divide||Average|Median|Minimum|Maximum||Percentage change|X percent of Y|X is what percent of Y'.split('|')
+    operation_strings = 'Sum|Subtract|Multiply|Divide||Average|Median|Minimum|Maximum||Percentage change|X percent of Y|X is what percent of Y'.split('|')
     operation = operation_strings[params['operation']]
 
     if operation is '':
@@ -52,12 +67,14 @@ def render(table, params):
     if operation in multicolumn_ops:
         # multiple column operations (add, average...)
 
+        extra_scalar = (operation=='Sum' or operation=='Multiply') and params['single_value_selector']!=0
+
         colnames  = params['colnames']
         if colnames == '':
             return table  # waiting for paramter, do nothing
         colnames = colnames.split(',')
-        if len(colnames) < 2:
-            return table  # need at least two columns to operate
+        if len(colnames)==1 and not extra_scalar:
+            return table  # need at least two columns to operate, unless we are adding another value
 
         for name in colnames:
             if not is_numeric_dtype(table[name]):
@@ -65,6 +82,17 @@ def render(table, params):
 
         newcolname = format_multicols(op_result_names[operation], colnames)
         table[newcolname]=(table[colnames]).agg(op_functions[operation], axis=1)
+
+        # Optional add/mulitply all rows by a scalar
+        if extra_scalar:
+            val = get_single_value(table, params)
+            if isinstance(val, str):
+                return str # error essage
+            if operation=='Sum':
+                table[newcolname] += val
+            else:
+                table[newcolname] *= val
+
 
     else:
         # two column operations (subtract, percentage, ...)
