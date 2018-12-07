@@ -22,7 +22,7 @@ op_result_names = {
     'Average' : 'Average of',
     'Median' : 'Median of',
     'Minimum' : 'Minimum of',
-    "Maximum" : 'Minimum of',
+    "Maximum" : 'Maximum of',
     'Percentage change' : 'Percent change {col1} to {col2}',
     'X percent of Y' : '{col1} percent of {col2}',
     'X is what percent of Y' : '{col1} is this percent of {col2}'
