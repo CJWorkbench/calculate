@@ -7,7 +7,7 @@
  "help_url": "https://github.com/cjworkbench/hello-workbench",
  "parameters": [
         {
-            "name": "Select operation",
+            "name": "Operation (between columns)",
             "id_name": "operation",
             "type": "menu",
             "menu_items" : "Sum|Subtract|Multiply|Divide||Average|Median|Minimum|Maximum||Percentage change|X percent of Y|X is what percent of Y",
@@ -44,7 +44,7 @@
             "id_name":"single_value_selector",
             "name": "",
             "type":"menu",
-            "menu_items": "Select|Cell value|Constant value",
+            "menu_items": "None|Cell value|Constant value",
             "visible_if":{
                 "id_name" : "operation",
                 "value":"Sum|Multiply"
