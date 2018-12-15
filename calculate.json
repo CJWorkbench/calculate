@@ -30,19 +30,10 @@
                 "id_name" : "operation",
                 "value":"Sum"
             }
-        },        
-        {
-            "name": "then multiply by",
-            "type":"statictext",
-            "id_name":"multiply_additional",
-            "visible_if":{
-                "id_name" : "operation",
-                "value":"Multiply"
-            }
-        },        
+        },          
         {
             "id_name":"single_value_selector",
-            "name": "",
+            "name": "and multiply by",
             "type":"menu",
             "menu_items": "(none)|Cell value|Constant value",
             "visible_if":{
