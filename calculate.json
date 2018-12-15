@@ -23,7 +23,7 @@
             }
         },
         {
-            "name": "then add",
+            "name": "and add",
             "type":"statictext",
             "id_name":"add_additional",
             "visible_if":{
@@ -32,7 +32,7 @@
             }
         },
         {
-            "name": "then multiply by",
+            "name": "and by",
             "type":"statictext",
             "id_name":"multiply_additional",
             "visible_if":{
@@ -44,7 +44,7 @@
             "id_name":"single_value_selector",
             "name": "",
             "type":"menu",
-            "menu_items": "(none)|Cell value|Constant value",
+            "menu_items": "Select||Cell value|Constant value",
             "visible_if":{
                 "id_name" : "operation",
                 "value":"Sum|Multiply"
