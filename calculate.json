@@ -42,7 +42,7 @@
         },    
         {
             "id_name":"single_value_selector",
-            "name": "and multiply by",
+            "name": "",
             "type":"menu",
             "menu_items": "(none)|Cell value|Constant value",
             "visible_if":{
