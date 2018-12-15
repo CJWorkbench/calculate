@@ -44,7 +44,7 @@
             "id_name":"single_value_selector",
             "name": "",
             "type":"menu",
-            "menu_items": "Select||Cell value|Constant value",
+            "menu_items": "Select|Cell value|Constant value",
             "visible_if":{
                 "id_name" : "operation",
                 "value":"Sum|Multiply"
