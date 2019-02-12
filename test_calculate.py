@@ -21,7 +21,7 @@ class TestCalculate(unittest.TestCase):
              ['Fredrick', 11, 12, 13, 1]],
             columns=['a', 'b', 'c', 'd', 'e'])
 
-        self.defaults = { 'colnames':'', 'col1':'', 'col2':'', 'single_value_selector':0 }
+        self.defaults = { 'colnames':'', 'col1':'', 'col2':'', 'single_value_selector':0, 'outcolname':'' }
 
     def test_no_multicolumn(self):
         # Missing columns on a multi-column operation
@@ -43,6 +43,30 @@ class TestCalculate(unittest.TestCase):
 
     def test_add(self):
         params = {**self.defaults, 'operation':menu.index('Sum'), 'colnames':'b,c,d' }
+        newtab = self.table.copy()
+        newtab['Sum of b, c, d'] = newtab[['b','c','d']].agg('sum', axis=1)
+        out = render(self.table, params)
+        self.assertTrue(out.equals(newtab)) 
+
+    def test_output_name_multicolumn(self):
+        params = {**self.defaults, 'operation':menu.index('Sum'), 'colnames':'b,c,d', 'outcolname':'Fish' }
+        newtab = self.table.copy()
+        newtab['Fish'] = newtab[['b','c','d']].agg('sum', axis=1)
+        out = render(self.table, params)
+        self.assertTrue(out.equals(newtab)) 
+
+    def test_empty_output_name(self):
+        # empty column name should get default automatic name
+        params = {**self.defaults, 'operation':menu.index('Sum'), 'colnames':'b,c,d', 'outcolname':'' }
+        newtab = self.table.copy()
+        newtab['Sum of b, c, d'] = newtab[['b','c','d']].agg('sum', axis=1)
+        out = render(self.table, params)
+        self.assertTrue(out.equals(newtab)) 
+
+    def test_missing_output_name(self):
+        # compatibility with prior paramster versions in the database 
+        params = {**self.defaults, 'operation':menu.index('Sum'), 'colnames':'b,c,d' }
+        del params['outcolname']
         newtab = self.table.copy()
         newtab['Sum of b, c, d'] = newtab[['b','c','d']].agg('sum', axis=1)
         out = render(self.table, params)
@@ -123,6 +147,14 @@ class TestCalculate(unittest.TestCase):
         out = render(self.table, params)
         newtab = self.table.copy()
         newtab['c minus d'] = newtab['c'] - newtab['d']
+        self.assertTrue(out.equals(newtab)) 
+
+    def test_two_column_output_name(self):
+        # Different code path for many cols vs. two cols operations, so  test this here too
+        params = {**self.defaults, 'operation':menu.index('Subtract'), 'col1':'c', 'col2':'d', 'outcolname':'Fish'}
+        out = render(self.table, params)
+        newtab = self.table.copy()
+        newtab['Fish'] = newtab['c'] - newtab['d']
         self.assertTrue(out.equals(newtab)) 
 
     def test_percent_change(self):

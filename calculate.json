@@ -11,7 +11,7 @@
             "id_name": "operation",
             "type": "menu",
             "menu_items" : "Sum|Subtract|Multiply|Divide||Average|Median|Minimum|Maximum||Percentage change|X percent of Y|X is what percent of Y",
-            "default" : "0"
+            "default" : 0
         },
         {
             "name": "",
@@ -152,6 +152,12 @@
                 "value" : "Sum|Multiply|Average|Median|Minimum|Maximum",
                 "invert": true
             }
+        },
+        {
+            "name": "Output column name",
+            "id_name": "outcolname",
+            "placeholder": "(optional)",
+            "type": "string"
         }
     ]
 }

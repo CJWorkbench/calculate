@@ -80,7 +80,10 @@ def render(table, params):
             if not is_numeric_dtype(table[name]):
                 return "Column " + name + " is not numbers"
 
-        newcolname = format_multicols(op_result_names[operation], colnames)
+        if 'outcolname' in params and params['outcolname']!='':
+            newcolname = params['outcolname']
+        else:
+            newcolname = format_multicols(op_result_names[operation], colnames)
         table[newcolname]=(table[colnames]).agg(op_functions[operation], axis=1)
 
         # Optional add/mulitply all rows by a scalar
@@ -109,7 +112,10 @@ def render(table, params):
         if not is_numeric_dtype(table[col2]):
             return "Column " + col2 + " is not numbers"
 
-        newcolname = format_two_cols(op_result_names[operation], col1, col2)
+        if 'outcolname' in params and params['outcolname']!='':
+            newcolname = params['outcolname']
+        else:
+            newcolname = format_two_cols(op_result_names[operation], col1, col2)
         table[newcolname] = op_functions[operation](table[col1], table[col2])
         
     return table
