@@ -1,0 +1,126 @@
+id_name: calculate
+name: Calculate
+category: Analyze
+icon: calculator
+description: "Add, subtract, multiply, divide, minimum, maximum, average, median, and percentages between columns"
+help_url: "https://github.com/cjworkbench/hello-workbench"
+parameters:
+- id_name: operation
+  type: menu
+  name: "Operation (between columns)"
+  default: add
+  options:
+  - { value: add, label: Sum }
+  - { value: subtract, label: Subtract }
+  - { value: multiply, label: Multiply }
+  - { value: divide, label: Divide }
+  - separator
+  - { value: mean, label: Average }
+  - { value: median, label: Median }
+  - { value: minimum, label: Minimum }
+  - { value: maximum, label: Maximum }
+  - separator
+  - { value: percent_change, label: Percentage change }
+  - { value: percent_multiply, label: X percent of Y }
+  - { value: percent_divide, label: X is what percent of Y }
+- id_name: colnames
+  name: ''
+  type: multicolumn
+  visible_if:
+    id_name: operation
+    value: [ add, multiply, mean, median, minimum, maximum ]
+- id_name: add_additional
+  type: statictext
+  name: and add
+  visible_if:
+    id_name: operation
+    value: [ add ]
+- id_name: multiply_additional
+  type: statictext
+  name: and by
+  visible_if:
+    id_name: operation
+    value: [ multiply ]
+- id_name: single_value_selector
+  name: ''
+  type: menu
+  default: none
+  options:
+  - { value: none, label: None }
+  - { value: cell, label: Cell value }
+  - { value: constant, label: Constant value }
+  visible_if:
+    id_name: operation
+    value: [ add, multiply ]
+- id_name: single_value_col
+  name: Column
+  type: column
+  visible_if:
+    id_name: single_value_selector
+    value: [ cell ]
+- id_name: single_value_row
+  name: Row
+  type: integer
+  default: 1
+  visible_if:
+    id_name: single_value_selector
+    value: [ cell ]
+- id_name: single_value_constant
+  name: Value
+  type: float
+  default: 1.0
+  visible_if:
+    id_name: single_value_selector
+    value: [ constant ]
+- id_name: oldvaluetext
+  name: Old value
+  type: statictext
+  visible_if:
+    id_name: operation
+    value: [ percent_change ]
+- id_name: xtext
+  name: X
+  type: statictext
+  visible_if:
+    id_name: operation
+    value: [ percent_divide, percent_multiply ]
+- id_name: col1
+  name: ''
+  type: column
+  visible_if:
+    id_name: operation
+    value: [ subtract, divide, percent_change, percent_multiply, percent_divide ]
+- id_name: subtracttext
+  type: statictext
+  name: minus
+  visible_if:
+    id_name: operation
+    value: [ subtract ]
+- id_name: dividetext
+  type: statictext
+  name: by
+  visible_if:
+    id_name: operation
+    value: [ divide ]
+- id_name: newvaluetext
+  type: statictext
+  name: New value
+  visible_if:
+    id_name: operation
+    value: [ percent_change ]
+- id_name: ytext
+  type: statictext
+  name: Y
+  visible_if:
+    id_name: operation
+    value: [ percent_divide, percent_multiply ]
+- id_name: col2
+  name: ''
+  type: column
+  visible_if:
+    id_name: operation
+    value: [ subtract, divide, percent_change, percent_multiply, percent_divide ]
+- id_name: outcolname
+  type: string
+  name: Output column name
+  placeholder: '(optional)'
