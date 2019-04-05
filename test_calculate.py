@@ -1,8 +1,10 @@
+from collections import namedtuple
 import unittest
 import numpy as np
 import pandas as pd
+from pandas.api.types import is_numeric_dtype
 from pandas.testing import assert_frame_equal
-from calculate import render
+import calculate
 
 
 DefaultParams = {
@@ -25,6 +27,29 @@ def P(**kwargs):
         **DefaultParams,
         **kwargs,
     }
+
+
+Column = namedtuple('Column', ('name', 'type', 'format'))
+
+
+def render(table, params, input_columns=None):
+    """
+    calculate.render() helper that automatically adds input_columns to
+    arguments if they aren't specified..
+
+    TODO make a test framework so we don't have to implement this here.
+    """
+    if input_columns is None:
+        def _infer_input_column(series: pd.Series) -> Column:
+            if is_numeric_dtype(series):
+                return Column(series.name, 'number', '{:,}')
+            else:
+                return Column(series.name, 'text', None)
+
+        input_columns = {c: _infer_input_column(table[c])
+                         for c in table.columns}
+
+    return calculate.render(table, params, input_columns=input_columns)
 
 
 class TestCalculate(unittest.TestCase):
@@ -71,7 +96,7 @@ class TestCalculate(unittest.TestCase):
             'd': [np.nan, 2, 2],
             'Sum of b, c, d': [2.2, 6.3, 8.4],
         })
-        assert_frame_equal(result, expected)
+        assert_frame_equal(result['dataframe'], expected)
 
     def test_output_name_multicolumn(self):
         result = render(pd.DataFrame({
@@ -85,7 +110,7 @@ class TestCalculate(unittest.TestCase):
             'd': [3.0],
             'X': [6.0],
         })
-        assert_frame_equal(result, expected)
+        assert_frame_equal(result['dataframe'], expected)
 
     def test_output_name_multicolumn_provided(self):
         result = render(pd.DataFrame({'b': [1.0], 'c': [2.0], 'd': [3.0]}),
@@ -93,7 +118,7 @@ class TestCalculate(unittest.TestCase):
         expected = pd.DataFrame(
             {'b': [1.0], 'c': [2.0], 'd': [3.0], 'X': [6.0]}
         )
-        assert_frame_equal(result, expected)
+        assert_frame_equal(result['dataframe'], expected)
 
     def test_output_name_multicolumn_default(self):
         result = render(pd.DataFrame({'b': [1.0], 'c': [2.0], 'd': [3.0]}),
@@ -101,7 +126,7 @@ class TestCalculate(unittest.TestCase):
         expected = pd.DataFrame(
             {'b': [1.0], 'c': [2.0], 'd': [3.0], 'Sum of b, c, d': [6.0]}
         )
-        assert_frame_equal(result, expected)
+        assert_frame_equal(result['dataframe'], expected)
 
     def test_output_name_multicolumn_default_with_many_cols(self):
         result = render(
@@ -111,7 +136,7 @@ class TestCalculate(unittest.TestCase):
             {'b': [1.0], 'c': [2.0], 'd': [3.0], 'e': [4.0],
              'Sum of 4 columns': [10.0]}
         )
-        assert_frame_equal(result, expected)
+        assert_frame_equal(result['dataframe'], expected)
 
     def test_add_constant(self):
         result = render(
@@ -120,7 +145,7 @@ class TestCalculate(unittest.TestCase):
               single_value_selector='constant', single_value_constant=100.0)
         )
         expected = pd.DataFrame({'b': [1.0], 'c': [2.0], 'X': [103.0]})
-        assert_frame_equal(result, expected)
+        assert_frame_equal(result['dataframe'], expected)
 
     def test_add_cell(self):
         result = render(
@@ -131,7 +156,12 @@ class TestCalculate(unittest.TestCase):
             }),
             P(operation='add', colnames='b,c,d', outcolname='X',
               single_value_selector='cell', single_value_row=2,
-              single_value_col='d')
+              single_value_col='d'),
+            {
+                'b': Column('b', 'number', '{:,.2f}'),
+                'c': Column('c', 'number', '{:,.1%}'),
+                'd': Column('d', 'number', '{:,}'),
+            }
         )
         expected = pd.DataFrame({
             'b': [1.0, 1.1],
@@ -139,7 +169,9 @@ class TestCalculate(unittest.TestCase):
             'd': [3.0, 3.1],
             'X': [9.1, 9.4],  # 6.0+3.1, 6.3+3.1
         })
-        assert_frame_equal(result, expected)
+        assert_frame_equal(result['dataframe'], expected)
+        # multicolumn op: Use format from first column
+        self.assertEqual(result['column_formats'], {'X': '{:,.2f}'})
 
     def test_multiply_constant(self):
         result = render(
@@ -148,7 +180,7 @@ class TestCalculate(unittest.TestCase):
               single_value_selector='constant', single_value_constant=100.0)
         )
         expected = pd.DataFrame({'b': [1.0], 'c': [2.0], 'X': [200.0]})
-        assert_frame_equal(result, expected)
+        assert_frame_equal(result['dataframe'], expected)
 
     def test_only_one_column_no_op(self):
         # if only one column supplied, does nothing
@@ -170,7 +202,7 @@ class TestCalculate(unittest.TestCase):
             'c': [2, 2],
             'X': [5.0 / 3, 2.5],
         })
-        assert_frame_equal(result, expected)
+        assert_frame_equal(result['dataframe'], expected)
 
     def test_add_non_numeric(self):
         result = render(pd.DataFrame({'a': [1], 'b': ['x']}),
@@ -180,7 +212,11 @@ class TestCalculate(unittest.TestCase):
     def test_subtract(self):
         result = render(
             pd.DataFrame({'a': [1, 2], 'b': [2, np.nan]}),
-            P(operation='subtract', col1='a', col2='b', outcolname='X')
+            P(operation='subtract', col1='a', col2='b', outcolname='X'),
+            {
+                'a': Column('a', 'number', '{:,.2f}'),
+                'b': Column('b', 'number', '{:.1%}'),
+            }
         )
         expected = pd.DataFrame({
             'a': [1, 2],
@@ -188,7 +224,9 @@ class TestCalculate(unittest.TestCase):
             # testing operation and NaN behavior all in one
             'X': [-1, np.nan],
         })
-        assert_frame_equal(result, expected)
+        assert_frame_equal(result['dataframe'], expected)
+        # binary op: use format from first column
+        self.assertEqual(result['column_formats'], {'X': '{:,.2f}'})
 
     def test_two_column_default_output_name(self):
         result = render(
@@ -196,7 +234,7 @@ class TestCalculate(unittest.TestCase):
             P(operation='subtract', col1='a', col2='b')
         )
         expected = pd.DataFrame({'a': [1], 'b': [2], 'a minus b': [-1]})
-        assert_frame_equal(result, expected)
+        assert_frame_equal(result['dataframe'], expected)
 
     def test_percent_change(self):
         # test auto-colname, NaN and normal behavior all in one
@@ -209,7 +247,9 @@ class TestCalculate(unittest.TestCase):
             'b': [1.6, np.nan],
             'Percent change a to b': [0.6, np.nan],
         })
-        assert_frame_equal(result, expected)
+        assert_frame_equal(result['dataframe'], expected)
+        self.assertEqual(result['column_formats'],
+                         {'Percent change a to b': '{:,.1%}'})
 
     def test_percentage_of(self):
         # test auto-colname, NaN and normal behavior all in one
@@ -222,7 +262,9 @@ class TestCalculate(unittest.TestCase):
             'b': [1.6, np.nan],
             'a percent of b': [0.6 * 1.6, np.nan],
         })
-        assert_frame_equal(result, expected)
+        assert_frame_equal(result['dataframe'], expected)
+        self.assertEqual(result['column_formats'],
+                         {'a percent of b': '{:,.1%}'})
 
 
 if __name__ == '__main__':
