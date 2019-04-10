@@ -266,6 +266,15 @@ class TestCalculate(unittest.TestCase):
         self.assertEqual(result['column_formats'],
                          {'a percent of b': '{:,.1%}'})
 
+    def test_binary_with_non_number_columns_is_error(self):
+        # test auto-colname, NaN and normal behavior all in one
+        result = render(
+            pd.DataFrame({'a': ['x'], 'b': [1.0]}),
+            P(operation='percent_multiply', col1='a', col2='b')
+        )
+        self.assertEqual(result, 'Column "a" is not numbers')
+
+
 
 if __name__ == '__main__':
     unittest.main()

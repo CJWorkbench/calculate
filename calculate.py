@@ -106,10 +106,9 @@ class BinaryOp:
 
         # If either column is not a number, return an error message
         # see https://github.com/CJWorkbench/cjworkbench/wiki/Column-Types
-        if col1.type != 'number':
-            return "Column " + col1 + " is not numbers"
-        if col2.type != 'number':
-            return "Column " + col2 + " is not numbers"
+        for column in [col1, col2]:
+            if column.type != 'number':
+                return f'Column "{column.name}" is not numbers'
 
         if params['outcolname']:
             newcolname = params['outcolname']
