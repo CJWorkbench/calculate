@@ -36,7 +36,13 @@ class MulticolumnOp:
                 return "Row number cannot be less than 1"
             elif row >= table.shape[0]:
                 return "Row number cannot be greater than %d" % table.shape[0]
-            return float(table[col][row])
+            value = table[col][row]
+            if pd.isnull(value):
+                return "The chosen cell does not contain a number"
+            try:
+                return float(value)
+            except ValueError:
+                return "The chosen cell does not contain a number"
         else:
             return params['single_value_constant']
 

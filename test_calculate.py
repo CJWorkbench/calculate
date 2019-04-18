@@ -173,6 +173,42 @@ class TestCalculate(unittest.TestCase):
         # multicolumn op: Use format from first column
         self.assertEqual(result['column_formats'], {'X': '{:,.2f}'})
 
+    def test_add_cell_not_number(self):
+        result = render(
+            pd.DataFrame({
+                'b': [1.0, 1.1],
+                'c': [2.0, 2.1],
+                's': ['a', 'b'],
+            }),
+            P(operation='add', colnames='b,c', outcolname='X',
+              single_value_selector='cell', single_value_row=2,
+              single_value_col='s'),
+            {
+                'b': Column('b', 'number', '{:,.2f}'),
+                'c': Column('c', 'number', '{:,.1%}'),
+                's': Column('s', 'text', ''),
+            }
+        )
+        self.assertEqual(result, 'The chosen cell does not contain a number')
+
+    def test_add_cell_nan(self):
+        result = render(
+            pd.DataFrame({
+                'b': [1.0, 1.1],
+                'c': [2.0, 2.1],
+                'd': [3.0, np.nan],
+            }),
+            P(operation='add', colnames='b,c', outcolname='X',
+              single_value_selector='cell', single_value_row=2,
+              single_value_col='d'),
+            {
+                'b': Column('b', 'number', '{:,.2f}'),
+                'c': Column('c', 'number', '{:,.1%}'),
+                'd': Column('d', 'number', '{:,}'),
+            }
+        )
+        self.assertEqual(result, 'The chosen cell does not contain a number')
+
     def test_multiply_constant(self):
         result = render(
             pd.DataFrame({'b': [1.0], 'c': [2.0]}),
