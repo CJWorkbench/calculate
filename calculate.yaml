@@ -26,6 +26,7 @@ parameters:
 - id_name: colnames
   name: ''
   type: multicolumn
+  column_types: [ number ]
   visible_if:
     id_name: operation
     value: [ add, multiply, mean, median, minimum, maximum ]
@@ -55,6 +56,7 @@ parameters:
 - id_name: single_value_col
   name: Column
   type: column
+  column_types: [ number ]
   visible_if:
     id_name: single_value_selector
     value: [ cell ]
@@ -87,6 +89,7 @@ parameters:
 - id_name: col1
   name: ''
   type: column
+  column_types: [ number ]
   visible_if:
     id_name: operation
     value: [ subtract, divide, percent_change, percent_multiply, percent_divide ]
@@ -117,6 +120,7 @@ parameters:
 - id_name: col2
   name: ''
   type: column
+  column_types: [ number ]
   visible_if:
     id_name: operation
     value: [ subtract, divide, percent_change, percent_multiply, percent_divide ]

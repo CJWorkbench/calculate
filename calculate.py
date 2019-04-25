@@ -55,15 +55,13 @@ class MulticolumnOp:
         if not params['colnames']:
             return table  # waiting for paramter, do nothing
 
-        columns = [input_columns[c] for c in params['colnames'].split(',')]
+        columns = [input_columns[c]
+                   for c in params['colnames'].split(',') if c]
         if len(columns) == 1 and not extra_scalar:
             # need at least two columns to operate, unless we are adding
             # another value
             return table
 
-        for column in columns:
-            if column.type != 'number':
-                return "Column " + column.name + " is not numbers"
         colnames = [column.name for column in columns]
 
         if params['outcolname']:
@@ -109,12 +107,6 @@ class BinaryOp:
 
         col1 = input_columns[params['col1']]
         col2 = input_columns[params['col2']]
-
-        # If either column is not a number, return an error message
-        # see https://github.com/CJWorkbench/cjworkbench/wiki/Column-Types
-        for column in [col1, col2]:
-            if column.type != 'number':
-                return f'Column "{column.name}" is not numbers'
 
         if params['outcolname']:
             newcolname = params['outcolname']
