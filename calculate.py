@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import Any, Callable, Dict, List, Optional
+import numpy as np
 import pandas as pd
 
 
@@ -127,20 +128,27 @@ Operations = {
     'add': MulticolumnOp('sum', 'Sum of {cols}'),
     'subtract': BinaryOp(lambda x, y: x - y, '{col1} minus {col2}'),
     'multiply': MulticolumnOp('product', 'Product of {cols}'),
-    'divide': BinaryOp(lambda x, y: x / y, '{col1} divided by {col2}'),
+    'divide': BinaryOp(
+        lambda x, y: (x / y).replace([np.inf, -np.inf], np.nan),
+        '{col1} divided by {col2}'
+    ),
     'mean': MulticolumnOp('mean', 'Average of {cols}'),
     'median': MulticolumnOp('median', 'Median of {cols}'),
     'minimum': MulticolumnOp('min', 'Minimum of {cols}'),
     'maximum': MulticolumnOp('max', 'Maximum of {cols}'),
-    'percent_change': BinaryOp(lambda x, y: (y - x) / x,
-                               'Percent change {col1} to {col2}',
-                               PercentFormat),
+    'percent_change': BinaryOp(
+        lambda x, y: ((y - x) / x).replace([np.inf, -np.inf], np.nan),
+        'Percent change {col1} to {col2}',
+        PercentFormat
+    ),
     'percent_multiply': BinaryOp(lambda x, y: x * y,
                                  '{col1} percent of {col2}',
                                  PercentFormat),
-    'percent_divide': BinaryOp(lambda x, y: x / y,
-                               '{col1} is this percent of {col2}',
-                               PercentFormat),
+    'percent_divide': BinaryOp(
+        lambda x, y: (x / y).replace([np.inf, -np.inf], np.nan),
+        '{col1} is this percent of {col2}',
+        PercentFormat
+    ),
 }
 
 

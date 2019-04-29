@@ -240,6 +240,17 @@ class TestCalculate(unittest.TestCase):
         })
         assert_frame_equal(result['dataframe'], expected)
 
+    def test_mean_of_zero_sum_is_zero(self):
+        result = render(
+            pd.DataFrame({'A': [1], 'B': [-1]}),
+            P(operation='mean', colnames='A,B', outcolname='X')
+        )
+        expected = pd.DataFrame({
+            'A': [1],
+            'B': [-1],
+            'X': [0.0],  # not divide-by-zero error or inf or -inf.
+        })
+
     def test_subtract(self):
         result = render(
             pd.DataFrame({'a': [1, 2], 'b': [2, np.nan]}),
@@ -259,6 +270,25 @@ class TestCalculate(unittest.TestCase):
         # binary op: use format from first column
         self.assertEqual(result['column_formats'], {'X': '{:,.2f}'})
 
+    def test_div_by_zero_is_nan(self):
+        result = render(
+            pd.DataFrame({
+                'A': [1, -2, 3, -4],
+                'B': [0, 0, 1, np.nan],
+            }),
+            P(operation='divide', col1='A', col2='B', outcolname='X'),
+            {
+                'A': Column('A', 'number', '{:,.2f}'),
+                'B': Column('B', 'number', '{:.1%}'),
+            }
+        )
+        expected = pd.DataFrame({
+            'A': [1, -2, 3, -4],
+            'B': [0, 0, 1, np.nan],
+            'X': [np.nan, np.nan, 3, np.nan],
+        })
+        assert_frame_equal(result['dataframe'], expected)
+
     def test_two_column_default_output_name(self):
         result = render(
             pd.DataFrame({'a': [1], 'b': [2]}),
@@ -268,7 +298,6 @@ class TestCalculate(unittest.TestCase):
         assert_frame_equal(result['dataframe'], expected)
 
     def test_percent_change(self):
-        # test auto-colname, NaN and normal behavior all in one
         result = render(
             pd.DataFrame({'a': [1, 2], 'b': [1.6, np.nan]}),
             P(operation='percent_change', col1='a', col2='b')
@@ -282,7 +311,22 @@ class TestCalculate(unittest.TestCase):
         self.assertEqual(result['column_formats'],
                          {'Percent change a to b': '{:,.1%}'})
 
-    def test_percentage_of(self):
+    def test_percent_change_from_zero_is_nan(self):
+        # test auto-colname, NaN and normal behavior all in one
+        result = render(
+            pd.DataFrame({'a': [1, 0], 'b': [1.6, 2]}),
+            P(operation='percent_change', col1='a', col2='b')
+        )
+        expected = pd.DataFrame({
+            'a': [1, 0],
+            'b': [1.6, 2],
+            'Percent change a to b': [0.6, np.nan],
+        })
+        assert_frame_equal(result['dataframe'], expected)
+        self.assertEqual(result['column_formats'],
+                         {'Percent change a to b': '{:,.1%}'})
+
+    def test_percent_multiply(self):
         # test auto-colname, NaN and normal behavior all in one
         result = render(
             pd.DataFrame({'a': [0.6, 2], 'b': [1.6, np.nan]}),
@@ -296,6 +340,18 @@ class TestCalculate(unittest.TestCase):
         assert_frame_equal(result['dataframe'], expected)
         self.assertEqual(result['column_formats'],
                          {'a percent of b': '{:,.1%}'})
+
+    def test_percent_divide_over_zero_is_null(self):
+        result = render(
+            pd.DataFrame({'a': [1, 0.5], 'b': [1.6, 0]}),
+            P(operation='percent_divide', col1='a', col2='b')
+        )
+        expected = pd.DataFrame({
+            'a': [1, 0.5],
+            'b': [1.6, 0],
+            'a is this percent of b': [0.625, np.nan],
+        })
+        assert_frame_equal(result['dataframe'], expected)
 
 
 if __name__ == '__main__':
