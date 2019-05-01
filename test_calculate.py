@@ -9,7 +9,7 @@ import calculate
 
 DefaultParams = {
     'operation': 'add',
-    'colnames': '',
+    'colnames': [],
     'col1': '',
     'col2': '',
     'single_value_selector': 'none',
@@ -52,7 +52,101 @@ def render(table, params, input_columns=None):
     return calculate.render(table, params, input_columns=input_columns)
 
 
-class TestCalculate(unittest.TestCase):
+class MigrateParamsTest(unittest.TestCase):
+    def test_v0(self):
+        self.assertEqual(calculate.migrate_params({
+            'operation': 5,
+            'colnames': '',
+            'col1': '',
+            'col2': '',
+            'single_value_selector': 2,
+            'single_value_col': '',
+            'single_value_row': 1,
+            'single_value_constant': 1.0,
+            'outcolname': '',
+        }), {
+            'operation': 'mean',
+            'colnames': [],
+            'col1': '',
+            'col2': '',
+            'single_value_selector': 'constant',
+            'single_value_col': '',
+            'single_value_row': 1,
+            'single_value_constant': 1.0,
+            'outcolname': '',
+        })
+
+    def test_v1_no_colnames(self):
+        self.assertEqual(calculate.migrate_params({
+            'operation': 'add',
+            'colnames': '',
+            'col1': '',
+            'col2': '',
+            'single_value_selector': 'none',
+            'single_value_col': '',
+            'single_value_row': 1,
+            'single_value_constant': 1.0,
+            'outcolname': '',
+        }), {
+            'operation': 'add',
+            'colnames': [],
+            'col1': '',
+            'col2': '',
+            'single_value_selector': 'none',
+            'single_value_col': '',
+            'single_value_row': 1,
+            'single_value_constant': 1.0,
+            'outcolname': '',
+        })
+
+    def test_v1(self):
+        self.assertEqual(calculate.migrate_params({
+            'operation': 'add',
+            'colnames': 'A,B',
+            'col1': '',
+            'col2': '',
+            'single_value_selector': 'none',
+            'single_value_col': '',
+            'single_value_row': 1,
+            'single_value_constant': 1.0,
+            'outcolname': '',
+        }), {
+            'operation': 'add',
+            'colnames': ['A', 'B'],
+            'col1': '',
+            'col2': '',
+            'single_value_selector': 'none',
+            'single_value_col': '',
+            'single_value_row': 1,
+            'single_value_constant': 1.0,
+            'outcolname': '',
+        })
+
+    def test_v2(self):
+        self.assertEqual(calculate.migrate_params({
+            'operation': 'add',
+            'colnames': ['A', 'B'],
+            'col1': '',
+            'col2': '',
+            'single_value_selector': 'none',
+            'single_value_col': '',
+            'single_value_row': 1,
+            'single_value_constant': 1.0,
+            'outcolname': '',
+        }), {
+            'operation': 'add',
+            'colnames': ['A', 'B'],
+            'col1': '',
+            'col2': '',
+            'single_value_selector': 'none',
+            'single_value_col': '',
+            'single_value_row': 1,
+            'single_value_constant': 1.0,
+            'outcolname': '',
+        })
+
+
+class RenderTest(unittest.TestCase):
     def setUp(self):
         # Test data includes some non number columns and some nulls and values
         # to check type handling
@@ -66,7 +160,7 @@ class TestCalculate(unittest.TestCase):
 
     def test_no_multicolumn(self):
         # Missing columns on a multi-column operation
-        result = render(self.table, P(operation='add', colnames=''))
+        result = render(self.table, P(operation='add', colnames=[]))
         # should NOP when first applied
         assert_frame_equal(result, self.table)
 
@@ -89,7 +183,7 @@ class TestCalculate(unittest.TestCase):
             'b': [1, 2, 3],
             'c': [1.2, 2.3, 3.4],
             'd': [np.nan, 2, 2],
-        }), P(operation='add', colnames='b,c,d'))
+        }), P(operation='add', colnames=['b', 'c', 'd']))
         expected = pd.DataFrame({
             'b': [1, 2, 3],
             'c': [1.2, 2.3, 3.4],
@@ -103,7 +197,7 @@ class TestCalculate(unittest.TestCase):
             'b': [1.0],
             'c': [2.0],
             'd': [3.0],
-        }), P(operation='add', colnames='b,c,d', outcolname='X'))
+        }), P(operation='add', colnames=['b', 'c', 'd'], outcolname='X'))
         expected = pd.DataFrame({
             'b': [1.0],
             'c': [2.0],
@@ -114,7 +208,8 @@ class TestCalculate(unittest.TestCase):
 
     def test_output_name_multicolumn_provided(self):
         result = render(pd.DataFrame({'b': [1.0], 'c': [2.0], 'd': [3.0]}),
-                        P(operation='add', colnames='b,c,d', outcolname='X'))
+                        P(operation='add', colnames=['b', 'c', 'd'],
+                          outcolname='X'))
         expected = pd.DataFrame(
             {'b': [1.0], 'c': [2.0], 'd': [3.0], 'X': [6.0]}
         )
@@ -122,7 +217,8 @@ class TestCalculate(unittest.TestCase):
 
     def test_output_name_multicolumn_default(self):
         result = render(pd.DataFrame({'b': [1.0], 'c': [2.0], 'd': [3.0]}),
-                        P(operation='add', colnames='b,c,d', outcolname=''))
+                        P(operation='add', colnames=['b', 'c', 'd'],
+                          outcolname=''))
         expected = pd.DataFrame(
             {'b': [1.0], 'c': [2.0], 'd': [3.0], 'Sum of b, c, d': [6.0]}
         )
@@ -131,7 +227,7 @@ class TestCalculate(unittest.TestCase):
     def test_output_name_multicolumn_default_with_many_cols(self):
         result = render(
             pd.DataFrame({'b': [1.0], 'c': [2.0], 'd': [3.0], 'e': [4.0]}),
-            P(operation='add', colnames='b,c,d,e', outcolname=''))
+            P(operation='add', colnames=['b', 'c', 'd', 'e'], outcolname=''))
         expected = pd.DataFrame(
             {'b': [1.0], 'c': [2.0], 'd': [3.0], 'e': [4.0],
              'Sum of 4 columns': [10.0]}
@@ -141,7 +237,7 @@ class TestCalculate(unittest.TestCase):
     def test_add_constant(self):
         result = render(
             pd.DataFrame({'b': [1.0], 'c': [2.0]}),
-            P(operation='add', colnames='b,c', outcolname='X',
+            P(operation='add', colnames=['b', 'c'], outcolname='X',
               single_value_selector='constant', single_value_constant=100.0)
         )
         expected = pd.DataFrame({'b': [1.0], 'c': [2.0], 'X': [103.0]})
@@ -154,7 +250,7 @@ class TestCalculate(unittest.TestCase):
                 'c': [2.0, 2.1],
                 'd': [3.0, 3.1],
             }),
-            P(operation='add', colnames='b,c,d', outcolname='X',
+            P(operation='add', colnames=['b', 'c', 'd'], outcolname='X',
               single_value_selector='cell', single_value_row=2,
               single_value_col='d'),
             {
@@ -180,7 +276,7 @@ class TestCalculate(unittest.TestCase):
                 'c': [2.0, 2.1],
                 's': ['a', 'b'],
             }),
-            P(operation='add', colnames='b,c', outcolname='X',
+            P(operation='add', colnames=['b', 'c'], outcolname='X',
               single_value_selector='cell', single_value_row=2,
               single_value_col='s'),
             {
@@ -198,7 +294,7 @@ class TestCalculate(unittest.TestCase):
                 'c': [2.0, 2.1],
                 'd': [3.0, np.nan],
             }),
-            P(operation='add', colnames='b,c', outcolname='X',
+            P(operation='add', colnames=['b', 'c'], outcolname='X',
               single_value_selector='cell', single_value_row=2,
               single_value_col='d'),
             {
@@ -212,7 +308,7 @@ class TestCalculate(unittest.TestCase):
     def test_multiply_constant(self):
         result = render(
             pd.DataFrame({'b': [1.0], 'c': [2.0]}),
-            P(operation='multiply', colnames='b,c', outcolname='X',
+            P(operation='multiply', colnames=['b', 'c'], outcolname='X',
               single_value_selector='constant', single_value_constant=100.0)
         )
         expected = pd.DataFrame({'b': [1.0], 'c': [2.0], 'X': [200.0]})
@@ -222,7 +318,7 @@ class TestCalculate(unittest.TestCase):
         # if only one column supplied, does nothing
         result = render(
             pd.DataFrame({'b': [1.0], 'c': [2.0]}),
-            P(operation='multiply', colnames='b', outcolname='X')
+            P(operation='multiply', colnames=['b'], outcolname='X')
         )
         expected = pd.DataFrame({'b': [1.0], 'c': [2.0]})
         assert_frame_equal(result, expected)
@@ -230,7 +326,7 @@ class TestCalculate(unittest.TestCase):
     def test_mean(self):
         result = render(
             pd.DataFrame({'a': [1, np.nan], 'b': [2.0, 3.0], 'c': [2, 2]}),
-            P(operation='mean', colnames='a,b,c', outcolname='X')
+            P(operation='mean', colnames=['a', 'b', 'c'], outcolname='X')
         )
         expected = pd.DataFrame({
             'a': [1, np.nan],
@@ -243,7 +339,7 @@ class TestCalculate(unittest.TestCase):
     def test_mean_of_zero_sum_is_zero(self):
         result = render(
             pd.DataFrame({'A': [1], 'B': [-1]}),
-            P(operation='mean', colnames='A,B', outcolname='X')
+            P(operation='mean', colnames=['A', 'B'], outcolname='X')
         )
         expected = pd.DataFrame({
             'A': [1],

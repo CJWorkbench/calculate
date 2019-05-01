@@ -27,6 +27,7 @@ parameters:
   name: ''
   type: multicolumn
   column_types: [ number ]
+  deprecated_string_storage: false
   visible_if:
     id_name: operation
     value: [ add, multiply, mean, median, minimum, maximum ]

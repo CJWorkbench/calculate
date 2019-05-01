@@ -53,17 +53,15 @@ class MulticolumnOp:
             and params['single_value_selector'] != 'none'
         )
 
-        if not params['colnames']:
+        colnames = params['colnames']
+        if not colnames:
             return table  # waiting for paramter, do nothing
 
-        columns = [input_columns[c]
-                   for c in params['colnames'].split(',') if c]
+        columns = [input_columns[c] for c in colnames]
         if len(columns) == 1 and not extra_scalar:
             # need at least two columns to operate, unless we are adding
             # another value
             return table
-
-        colnames = [column.name for column in columns]
 
         if params['outcolname']:
             newcolname = params['outcolname']
@@ -153,8 +151,48 @@ Operations = {
 
 
 def render(table, params, *, input_columns):
-    if not params['operation']:
-        return table  # waiting for paramter, do nothing
-
     operation = Operations[params['operation']]
     return operation.render(table, params, input_columns)
+
+
+def _migrate_params_v0_to_v1(params):
+    """v0: menus are numeric; v1: menus are text."""
+    return {
+        **params,
+        'operation': {
+            0: 'add',
+            1: 'subtract',
+            2: 'multiply',
+            3: 'divide',
+            # separator
+            5: 'mean',
+            6: 'median',
+            7: 'minimum',
+            8: 'maximum',
+            # separator
+            10: 'percent_change',
+            11: 'percent_multiply',
+            12: 'percent_divide',
+        }.get(params['operation'], 'add'),
+        'single_value_selector': {
+            0: 'none',
+            1: 'cell',
+            2: 'constant',
+        }.get(params['single_value_selector'], 'none'),
+    }
+
+
+def _migrate_params_v1_to_v2(params):
+    """v1: colnames is comma-separated str. v2: it's List[str]."""
+    return {
+        **params,
+        'colnames': [c for c in params['colnames'].split(',') if c],
+    }
+
+
+def migrate_params(params):
+    if isinstance(params['operation'], int):
+        params = _migrate_params_v0_to_v1(params)
+    if isinstance(params['colnames'], str):
+        params = _migrate_params_v1_to_v2(params)
+    return params
