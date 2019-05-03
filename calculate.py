@@ -156,7 +156,27 @@ def render(table, params, *, input_columns):
 
 
 def _migrate_params_v0_to_v1(params):
-    """v0: menus are numeric; v1: menus are text."""
+    """
+    v0: statictext had values (!); v1 no statictext values.
+
+    This migration encompasses two time periods: the time before
+    multiply_additional (a statictext) was added, and the time after.
+    """
+    return {
+        'operation': params['operation'],
+        'colnames': params['colnames'],
+        'col1': params['col1'],
+        'col2': params['col2'],
+        'single_value_selector': params['single_value_selector'],
+        'single_value_col': params['single_value_col'],
+        'single_value_row': params['single_value_row'],
+        'single_value_constant': params['single_value_constant'],
+        'outcolname': params['outcolname']
+    }
+
+
+def _migrate_params_v1_to_v2(params):
+    """v1: menus are numeric; v2: menus are text."""
     return {
         **params,
         'operation': {
@@ -182,8 +202,8 @@ def _migrate_params_v0_to_v1(params):
     }
 
 
-def _migrate_params_v1_to_v2(params):
-    """v1: colnames is comma-separated str. v2: it's List[str]."""
+def _migrate_params_v2_to_v3(params):
+    """v2: colnames is comma-separated str. v3: it's List[str]."""
     return {
         **params,
         'colnames': [c for c in params['colnames'].split(',') if c],
@@ -191,8 +211,10 @@ def _migrate_params_v1_to_v2(params):
 
 
 def migrate_params(params):
-    if isinstance(params['operation'], int):
+    if 'xtext' in params:
         params = _migrate_params_v0_to_v1(params)
-    if isinstance(params['colnames'], str):
+    if isinstance(params['operation'], int):
         params = _migrate_params_v1_to_v2(params)
+    if isinstance(params['colnames'], str):
+        params = _migrate_params_v2_to_v3(params)
     return params

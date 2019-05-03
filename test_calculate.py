@@ -55,6 +55,14 @@ def render(table, params, input_columns=None):
 class MigrateParamsTest(unittest.TestCase):
     def test_v0(self):
         self.assertEqual(calculate.migrate_params({
+            'xtext': '',
+            'ytext': '',
+            'dividetext': '',
+            'newvaluetext': '',
+            'oldvaluetext': '',
+            'subtracttext': '',
+            'add_additional': '',
+            'multiply_additional': '',
             'operation': 5,
             'colnames': '',
             'col1': '',
@@ -76,7 +84,30 @@ class MigrateParamsTest(unittest.TestCase):
             'outcolname': '',
         })
 
-    def test_v1_no_colnames(self):
+    def test_v1(self):
+        self.assertEqual(calculate.migrate_params({
+            'operation': 5,
+            'colnames': '',
+            'col1': '',
+            'col2': '',
+            'single_value_selector': 2,
+            'single_value_col': '',
+            'single_value_row': 1,
+            'single_value_constant': 1.0,
+            'outcolname': '',
+        }), {
+            'operation': 'mean',
+            'colnames': [],
+            'col1': '',
+            'col2': '',
+            'single_value_selector': 'constant',
+            'single_value_col': '',
+            'single_value_row': 1,
+            'single_value_constant': 1.0,
+            'outcolname': '',
+        })
+
+    def test_v2_no_colnames(self):
         self.assertEqual(calculate.migrate_params({
             'operation': 'add',
             'colnames': '',
@@ -99,7 +130,7 @@ class MigrateParamsTest(unittest.TestCase):
             'outcolname': '',
         })
 
-    def test_v1(self):
+    def test_v2(self):
         self.assertEqual(calculate.migrate_params({
             'operation': 'add',
             'colnames': 'A,B',
@@ -122,7 +153,7 @@ class MigrateParamsTest(unittest.TestCase):
             'outcolname': '',
         })
 
-    def test_v2(self):
+    def test_v3(self):
         self.assertEqual(calculate.migrate_params({
             'operation': 'add',
             'colnames': ['A', 'B'],
