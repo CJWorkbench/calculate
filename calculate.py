@@ -171,7 +171,7 @@ def _migrate_params_v0_to_v1(params):
         'single_value_col': params['single_value_col'],
         'single_value_row': params['single_value_row'],
         'single_value_constant': params['single_value_constant'],
-        'outcolname': params['outcolname']
+        'outcolname': params.get('outcolname', ''),  # it may not be there
     }
 
 

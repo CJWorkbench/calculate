@@ -71,7 +71,7 @@ class MigrateParamsTest(unittest.TestCase):
             'single_value_col': '',
             'single_value_row': 1,
             'single_value_constant': 1.0,
-            'outcolname': '',
+            # 'outcolname': '', -- it can be missing!
         }), {
             'operation': 'mean',
             'colnames': [],
