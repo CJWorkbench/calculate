@@ -10,7 +10,6 @@ import calculate
 DefaultParams = {
     'operation': 'add',
     'colnames': [],
-    'colname': '',
     'col1': '',
     'col2': '',
     'single_value_selector': 'none',
@@ -484,7 +483,7 @@ class RenderTest(unittest.TestCase):
     def test_percent_of_column_sum(self):
         result = render(
             pd.DataFrame({'a': [1, 3]}),
-            P(operation='percent_of_column_sum', colname='a')
+            P(operation='percent_of_column_sum', col1='a')
         )
         expected = pd.DataFrame({
             'a': [1, 3],
@@ -495,7 +494,7 @@ class RenderTest(unittest.TestCase):
     def test_percent_of_column_sum_null(self):
         result = render(
             pd.DataFrame({'a': [np.nan, 1, 3]}),
-            P(operation='percent_of_column_sum', colname='a')
+            P(operation='percent_of_column_sum', col1='a')
         )
         expected = pd.DataFrame({
             'a': [np.nan, 1, 3],
@@ -506,7 +505,7 @@ class RenderTest(unittest.TestCase):
     def test_percent_of_column_sum_all_null(self):
         result = render(
             pd.DataFrame({'a': [np.nan, np.nan]}),
-            P(operation='percent_of_column_sum', colname='a')
+            P(operation='percent_of_column_sum', col1='a')
         )
         expected = pd.DataFrame({
             'a': [np.nan, np.nan],
@@ -517,7 +516,7 @@ class RenderTest(unittest.TestCase):
     def test_percent_of_column_sum_inf(self):
         result = render(
             pd.DataFrame({'a': [-1, 1]}),
-            P(operation='percent_of_column_sum', colname='a')
+            P(operation='percent_of_column_sum', col1='a')
         )
         self.assertEqual(result, 'Column sum is 0.')
 

@@ -32,13 +32,6 @@ parameters:
   visible_if:
     id_name: operation
     value: [ add, multiply, mean, median, minimum, maximum ]
-- id_name: colname
-  name: ''
-  type: column
-  column_types: [ number ]
-  visible_if:
-    id_name: operation
-    value: [ percent_of_column_sum ]
 - id_name: add_additional
   type: statictext
   name: and add
@@ -101,7 +94,7 @@ parameters:
   column_types: [ number ]
   visible_if:
     id_name: operation
-    value: [ subtract, divide, percent_change, percent_multiply, percent_divide ]
+    value: [ subtract, divide, percent_change, percent_multiply, percent_divide, percent_of_column_sum ]
 - id_name: subtracttext
   type: statictext
   name: minus

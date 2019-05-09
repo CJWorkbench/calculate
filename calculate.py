@@ -135,21 +135,21 @@ class UnaryOp:
     override_result_column_format: Optional[str] = None
     """Python format string to force, if needed (e.g., '{:,.1%}')."""
 
-    def default_result_column_name(self, colname: str) -> str:
+    def default_result_column_name(self, col1: str) -> str:
         """op.default_result_column_name('x') => 'Percent of x'."""
-        return self.default_result_column_format.format(col=colname)
+        return self.default_result_column_format.format(col=col1)
 
     def render(self, table, params, input_columns) -> Dict[str, Any]:
-        if not params['colname']:
+        if not params['col1']:
             return table  # waiting for parameter -- no-op
 
-        colname = params['colname']
+        col1 = params['col1']
 
         if params['outcolname']:
             newcolname = params['outcolname']
         else:
-            newcolname = self.default_result_column_name(colname)
-        result = self.fn(table[colname])
+            newcolname = self.default_result_column_name(col1)
+        result = self.fn(table[col1])
 
         if isinstance(result, str):
             return result  # error message
@@ -159,7 +159,7 @@ class UnaryOp:
         return {
             'dataframe': table,
             'column_formats': {
-                newcolname: self.override_result_column_format or colname.format,
+                newcolname: self.override_result_column_format or col1.format,
             },
         }
 
