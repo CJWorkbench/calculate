@@ -120,6 +120,48 @@ class BinaryOp:
             },
         }
 
+@dataclass
+class UnaryOp:
+    """
+    Single-column operations (Percent of column sum).
+    """
+
+    fn: Callable[[pd.Series], pd.Series]
+    """Function to operate on column"""
+
+    default_result_column_format: str
+    """op.default_result_column_format.format('x', 'y') => 'x minus y'."""
+
+    override_result_column_format: Optional[str] = None
+    """Python format string to force, if needed (e.g., '{:,.1%}')."""
+
+    def default_result_column_name(self, colname: str) -> str:
+        """op.default_result_column_name('x') => 'Percent of x'."""
+        return self.default_result_column_format.format(col=colname)
+
+    def render(self, table, params, input_columns) -> Dict[str, Any]:
+        if not params['colname']:
+            return table  # waiting for parameter -- no-op
+
+        colname = params['colname']
+
+        if params['outcolname']:
+            newcolname = params['outcolname']
+        else:
+            newcolname = self.default_result_column_name(colname)
+        result = self.fn(table[colname])
+
+        if isinstance(result, str):
+            return result  # error message
+
+        table[newcolname] = result
+
+        return {
+            'dataframe': table,
+            'column_formats': {
+                newcolname: self.override_result_column_format or colname.format,
+            },
+        }
 
 PercentFormat = '{:,.1%}'
 Operations = {
@@ -147,6 +189,11 @@ Operations = {
         '{col1} is this percent of {col2}',
         PercentFormat
     ),
+    'percent_of_column_sum': UnaryOp(
+        lambda x: (x / x.sum()) if (all(x.isna()) or x.sum() != 0) else 'Column sum is 0.',
+        'Percent of {col}',
+        PercentFormat
+    )
 }
 
 
@@ -193,6 +240,8 @@ def _migrate_params_v1_to_v2(params):
             10: 'percent_change',
             11: 'percent_multiply',
             12: 'percent_divide',
+            # separator
+            13: 'percent_of_column_sum'
         }.get(params['operation'], 'add'),
         'single_value_selector': {
             0: 'none',

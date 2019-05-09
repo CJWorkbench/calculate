@@ -7,7 +7,7 @@ help_url: "https://github.com/cjworkbench/hello-workbench"
 parameters:
 - id_name: operation
   type: menu
-  name: "Operation (between columns)"
+  name: "Operation"
   default: add
   options:
   - { value: add, label: Sum }
@@ -23,6 +23,8 @@ parameters:
   - { value: percent_change, label: Percentage change }
   - { value: percent_multiply, label: X percent of Y }
   - { value: percent_divide, label: X is what percent of Y }
+  - separator
+  - { value: percent_of_column_sum, label: Percentage of column sum }
 - id_name: colnames
   name: ''
   type: multicolumn
@@ -30,6 +32,13 @@ parameters:
   visible_if:
     id_name: operation
     value: [ add, multiply, mean, median, minimum, maximum ]
+- id_name: colname
+  name: ''
+  type: column
+  column_types: [ number ]
+  visible_if:
+    id_name: operation
+    value: [ percent_of_column_sum ]
 - id_name: add_additional
   type: statictext
   name: and add
