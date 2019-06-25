@@ -21,8 +21,8 @@ parameters:
   - { value: maximum, label: Maximum }
   - separator
   - { value: percent_change, label: Percentage change }
-  - { value: percent_multiply, label: What is X percent of Y? }
-  - { value: percent_divide, label: X is what percent of Y? }
+  - { value: percent_multiply, label: "What is X percent of Y?"}
+  - { value: percent_divide, label: "X is what percent of Y?" }
   - separator
   - { value: percent_of_column_sum, label: Percentage of column sum }
 - id_name: colnames
