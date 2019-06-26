@@ -466,7 +466,7 @@ class RenderTest(unittest.TestCase):
         })
         assert_frame_equal(result['dataframe'], expected)
         self.assertEqual(result['column_formats'],
-                         {'a percent of b': '{:,.1%}'})
+                         {'a percent of b': '{:,}'})
 
     def test_percent_divide_over_zero_is_null(self):
         result = render(

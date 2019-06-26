@@ -182,8 +182,7 @@ Operations = {
         PercentFormat
     ),
     'percent_multiply': BinaryOp(lambda x, y: x * y,
-                                 '{col1} percent of {col2}',
-                                 PercentFormat),
+                                 '{col1} percent of {col2}'),
     'percent_divide': BinaryOp(
         lambda x, y: (x / y).replace([np.inf, -np.inf], np.nan),
         '{col1} is this percent of {col2}',
