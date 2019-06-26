@@ -21,8 +21,9 @@ DefaultParams = {
 
 
 # Quick param (dict) factory
+# don't allow keys that are not in DefaultParams, fill any non-specified keys with defaults
 def P(**kwargs):
-    assert not (set(kwargs.keys()) - set(DefaultParams.keys()))
+    assert not (set(kwargs.keys()) - set(DefaultParams.keys())) 
     return {
         **DefaultParams,
         **kwargs,
@@ -454,19 +455,39 @@ class RenderTest(unittest.TestCase):
                          {'Percent change a to b': '{:,.1%}'})
 
     def test_percent_multiply(self):
-        # test auto-colname, NaN and normal behavior all in one
+        # test auto-colname, NaN, and percentage/not percentage input behavior 
+        table = pd.DataFrame({
+                'a': [6, 6],            # 6% not percentage formatted
+                'b': [0.06, 0.06],      # 6% as percentage formatted
+                'c': [1.6, np.nan]})
+
+        # non-percentage formatted input, col A
         result = render(
-            pd.DataFrame({'a': [0.6, 2], 'b': [1.6, np.nan]}),
-            P(operation='percent_multiply', col1='a', col2='b')
-        )
-        expected = pd.DataFrame({
-            'a': [0.6, 2],
-            'b': [1.6, np.nan],
-            'a percent of b': [0.6 * 1.6, np.nan],
-        })
+            table,
+            P(operation='percent_multiply', col1='a', col2='c'),
+            {
+                'a': Column('a', 'number', '{:,}'),
+                'c': Column('c', 'number', '{:,}'),
+            })        
+        expected = table.copy()
+        expected['a percent of c'] = [0.06 * 1.6, np.nan]
+
         assert_frame_equal(result['dataframe'], expected)
-        self.assertEqual(result['column_formats'],
-                         {'a percent of b': '{:,}'})
+        self.assertEqual(result['column_formats'], {'a percent of c': '{:,}'})
+
+        # percentage formatted input, col B
+        result = render(
+            table,
+            P(operation='percent_multiply', col1='b', col2='c'),
+            {
+                'b': Column('b', 'number', '{:,.1%}'),
+                'c': Column('c', 'number', '{:,}'),
+            })        
+        expected = table.copy()
+        expected['b percent of c'] = [0.06 * 1.6, np.nan]
+
+        assert_frame_equal(result['dataframe'], expected)
+        self.assertEqual(result['column_formats'], {'b percent of c': '{:,}'})
 
     def test_percent_divide_over_zero_is_null(self):
         result = render(

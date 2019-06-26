@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from inspect import signature
 from typing import Any, Callable, Dict, List, Optional
 import numpy as np
 import pandas as pd
@@ -85,20 +86,22 @@ class MulticolumnOp:
         }
 
 
+
 @dataclass
 class BinaryOp:
-    fn: Callable[[pd.Series, pd.Series], pd.Series]
-    """Function to operate on two Series, returning a Series."""
+    fn: Callable 
+    """Function to operate on two Series, plus (optinally) their formats, returning a Series.
+    Formats will be passed if this function takes 4 args, not usual 2"""
 
-    default_result_column_format: str
+    default_result_column_name_format: str
     """op.default_result_column_format.format('x', 'y') => 'x minus y'."""
 
-    override_result_column_format: Optional[str] = None
-    """Python format string to force, if needed (e.g., '{:,.1%}')."""
+    override_result_column_format: Optional[Callable[[str, str], str]] = None
+    """Return result column format, given input colunmn formats (e.g., '{:,.1%}')."""
 
     def default_result_column_name(self, col1: str, col2: str) -> str:
         """op.default_result_column_name('x', 'y') => 'Sum of x, y'."""
-        return self.default_result_column_format.format(col1=col1, col2=col2)
+        return self.default_result_column_name_format.format(col1=col1, col2=col2)
 
     def render(self, table, params, input_columns) -> Dict[str, Any]:
         if not params['col1'] or not params['col2']:
@@ -111,14 +114,28 @@ class BinaryOp:
             newcolname = params['outcolname']
         else:
             newcolname = self.default_result_column_name(col1.name, col2.name)
-        table[newcolname] = self.fn(table[col1.name], table[col2.name])
+        if len(signature(self.fn).parameters) == 2:
+            table[newcolname] = self.fn(table[col1.name], 
+                                        table[col2.name]) 
+        else:
+            table[newcolname] = self.fn(table[col1.name], 
+                                        table[col2.name], 
+                                        input_columns[col1.name].format,
+                                        input_columns[col2.name].format)
+
+        if self.override_result_column_format:
+            newcolformat = self.override_result_column_format(input_columns[col1.name].format,
+                                                              input_columns[col2.name].format)
+        else:
+            newcolformat = col1.format 
 
         return {
             'dataframe': table,
             'column_formats': {
-                newcolname: self.override_result_column_format or col1.format,
+                newcolname: newcolformat
             },
         }
+
 
 @dataclass
 class UnaryOp:
@@ -129,15 +146,15 @@ class UnaryOp:
     fn: Callable[[pd.Series], pd.Series]
     """Function to operate on column"""
 
-    default_result_column_format: str
-    """op.default_result_column_format.format('x', 'y') => 'x minus y'."""
+    default_result_column_name_format: str
+    """op.default_result_column_name_format.format('x', 'y') => 'x minus y'."""
 
     override_result_column_format: Optional[str] = None
     """Python format string to force, if needed (e.g., '{:,.1%}')."""
 
     def default_result_column_name(self, col1: str) -> str:
         """op.default_result_column_name('x') => 'Percent of x'."""
-        return self.default_result_column_format.format(col=col1)
+        return self.default_result_column_name_format.format(col=col1)
 
     def render(self, table, params, input_columns) -> Dict[str, Any]:
         if not params['col1']:
@@ -163,7 +180,9 @@ class UnaryOp:
             },
         }
 
-PercentFormat = '{:,.1%}'
+
+PercentFormat = lambda x_fmt,y_fmt: '{:,.1%}'
+
 Operations = {
     'add': MulticolumnOp('sum', 'Sum of {cols}'),
     'subtract': BinaryOp(lambda x, y: x - y, '{col1} minus {col2}'),
@@ -181,8 +200,9 @@ Operations = {
         'Percent change {col1} to {col2}',
         PercentFormat
     ),
-    'percent_multiply': BinaryOp(lambda x, y: x * y,
-                                 '{col1} percent of {col2}'),
+    'percent_multiply': BinaryOp(lambda x, y, x_fmt, y_fmt: x * y if x_fmt=='{:,.1%}' else x*y/100,
+                                 '{col1} percent of {col2}',
+                                 lambda x_fmt,y_fmt: y_fmt),
     'percent_divide': BinaryOp(
         lambda x, y: (x / y).replace([np.inf, -np.inf], np.nan),
         '{col1} is this percent of {col2}',
