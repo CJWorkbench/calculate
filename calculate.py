@@ -20,9 +20,9 @@ class MulticolumnOp:
     def default_result_column_name(self, colnames: List[str]) -> str:
         """op.default_result_column_name(['x', 'y']) => 'Sum of x, y'."""
         if len(colnames) < 4:
-            colnames_str = ', '.join(colnames)
+            colnames_str = ", ".join(colnames)
         else:
-            colnames_str = f'{len(colnames)} columns'
+            colnames_str = f"{len(colnames)} columns"
 
         return self.default_result_column_format.format(cols=colnames_str)
 
@@ -30,10 +30,10 @@ class MulticolumnOp:
         """
         Find the single value the user specified (cell value or constant).
         """
-        if params['single_value_selector'] == 'cell':  # 'Cell value'
-            col = params['single_value_col']
+        if params["single_value_selector"] == "cell":  # 'Cell value'
+            col = params["single_value_col"]
             # go from 1-based in the UI to 0 based in the table
-            row = params['single_value_row'] - 1
+            row = params["single_value_row"] - 1
             if row < 0:
                 return "Row number cannot be less than 1"
             elif row >= table.shape[0]:
@@ -46,15 +46,14 @@ class MulticolumnOp:
             except ValueError:
                 return "The chosen cell does not contain a number"
         else:
-            return params['single_value_constant']
+            return params["single_value_constant"]
 
     def render(self, table, params, input_columns) -> Dict[str, Any]:
         extra_scalar = (
-            self.agg in {'sum', 'product'}
-            and params['single_value_selector'] != 'none'
+            self.agg in {"sum", "product"} and params["single_value_selector"] != "none"
         )
 
-        colnames = params['colnames']
+        colnames = params["colnames"]
         if not colnames:
             return table  # waiting for paramter, do nothing
 
@@ -64,8 +63,8 @@ class MulticolumnOp:
             # another value
             return table
 
-        if params['outcolname']:
-            newcolname = params['outcolname']
+        if params["outcolname"]:
+            newcolname = params["outcolname"]
         else:
             newcolname = self.default_result_column_name(colnames)
         table[newcolname] = table[colnames].agg(self.agg, axis=1)
@@ -75,21 +74,17 @@ class MulticolumnOp:
             val = self._get_single_value(table, params)
             if isinstance(val, str):
                 return val  # error essage
-            if self.agg == 'sum':
+            if self.agg == "sum":
                 table[newcolname] += val
             else:
                 table[newcolname] *= val
 
-        return {
-            'dataframe': table,
-            'column_formats': {newcolname: columns[0].format},
-        }
-
+        return {"dataframe": table, "column_formats": {newcolname: columns[0].format}}
 
 
 @dataclass
 class BinaryOp:
-    fn: Callable 
+    fn: Callable
     """Function to operate on two Series, plus (optinally) their formats, returning a Series.
     Formats will be passed if this function takes 4 args, not usual 2"""
 
@@ -104,37 +99,34 @@ class BinaryOp:
         return self.default_result_column_name_format.format(col1=col1, col2=col2)
 
     def render(self, table, params, input_columns) -> Dict[str, Any]:
-        if not params['col1'] or not params['col2']:
+        if not params["col1"] or not params["col2"]:
             return table  # waiting for parameter -- no-op
 
-        col1 = input_columns[params['col1']]
-        col2 = input_columns[params['col2']]
+        col1 = input_columns[params["col1"]]
+        col2 = input_columns[params["col2"]]
 
-        if params['outcolname']:
-            newcolname = params['outcolname']
+        if params["outcolname"]:
+            newcolname = params["outcolname"]
         else:
             newcolname = self.default_result_column_name(col1.name, col2.name)
         if len(signature(self.fn).parameters) == 2:
-            table[newcolname] = self.fn(table[col1.name], 
-                                        table[col2.name]) 
+            table[newcolname] = self.fn(table[col1.name], table[col2.name])
         else:
-            table[newcolname] = self.fn(table[col1.name], 
-                                        table[col2.name], 
-                                        input_columns[col1.name].format,
-                                        input_columns[col2.name].format)
+            table[newcolname] = self.fn(
+                table[col1.name],
+                table[col2.name],
+                input_columns[col1.name].format,
+                input_columns[col2.name].format,
+            )
 
         if self.override_result_column_format:
-            newcolformat = self.override_result_column_format(input_columns[col1.name].format,
-                                                              input_columns[col2.name].format)
+            newcolformat = self.override_result_column_format(
+                input_columns[col1.name].format, input_columns[col2.name].format
+            )
         else:
-            newcolformat = col1.format 
+            newcolformat = col1.format
 
-        return {
-            'dataframe': table,
-            'column_formats': {
-                newcolname: newcolformat
-            },
-        }
+        return {"dataframe": table, "column_formats": {newcolname: newcolformat}}
 
 
 @dataclass
@@ -157,13 +149,13 @@ class UnaryOp:
         return self.default_result_column_name_format.format(col=col1)
 
     def render(self, table, params, input_columns) -> Dict[str, Any]:
-        if not params['col1']:
+        if not params["col1"]:
             return table  # waiting for parameter -- no-op
 
-        col1 = params['col1']
+        col1 = params["col1"]
 
-        if params['outcolname']:
-            newcolname = params['outcolname']
+        if params["outcolname"]:
+            newcolname = params["outcolname"]
         else:
             newcolname = self.default_result_column_name(col1)
         result = self.fn(table[col1])
@@ -174,50 +166,54 @@ class UnaryOp:
         table[newcolname] = result
 
         return {
-            'dataframe': table,
-            'column_formats': {
-                newcolname: self.override_result_column_format or col1.format,
+            "dataframe": table,
+            "column_formats": {
+                newcolname: self.override_result_column_format or col1.format
             },
         }
 
 
-PercentFormat = lambda x_fmt,y_fmt: '{:,.1%}'
+PercentFormat = lambda x_fmt, y_fmt: "{:,.1%}"
 
 Operations = {
-    'add': MulticolumnOp('sum', 'Sum of {cols}'),
-    'subtract': BinaryOp(lambda x, y: x - y, '{col1} minus {col2}'),
-    'multiply': MulticolumnOp('product', 'Product of {cols}'),
-    'divide': BinaryOp(
+    "add": MulticolumnOp("sum", "Sum of {cols}"),
+    "subtract": BinaryOp(lambda x, y: x - y, "{col1} minus {col2}"),
+    "multiply": MulticolumnOp("product", "Product of {cols}"),
+    "divide": BinaryOp(
         lambda x, y: (x / y).replace([np.inf, -np.inf], np.nan),
-        '{col1} divided by {col2}'
+        "{col1} divided by {col2}",
     ),
-    'mean': MulticolumnOp('mean', 'Average of {cols}'),
-    'median': MulticolumnOp('median', 'Median of {cols}'),
-    'minimum': MulticolumnOp('min', 'Minimum of {cols}'),
-    'maximum': MulticolumnOp('max', 'Maximum of {cols}'),
-    'percent_change': BinaryOp(
+    "mean": MulticolumnOp("mean", "Average of {cols}"),
+    "median": MulticolumnOp("median", "Median of {cols}"),
+    "minimum": MulticolumnOp("min", "Minimum of {cols}"),
+    "maximum": MulticolumnOp("max", "Maximum of {cols}"),
+    "percent_change": BinaryOp(
         lambda x, y: ((y - x) / x).replace([np.inf, -np.inf], np.nan),
-        'Percent change {col1} to {col2}',
-        PercentFormat
+        "Percent change {col1} to {col2}",
+        PercentFormat,
     ),
-    'percent_multiply': BinaryOp(lambda x, y, x_fmt, y_fmt: x * y if x_fmt=='{:,.1%}' else x*y/100,
-                                 '{col1} percent of {col2}',
-                                 lambda x_fmt,y_fmt: y_fmt),
-    'percent_divide': BinaryOp(
+    "percent_multiply": BinaryOp(
+        lambda x, y, x_fmt, y_fmt: x * y if x_fmt == "{:,.1%}" else x * y / 100,
+        "{col1} percent of {col2}",
+        lambda x_fmt, y_fmt: y_fmt,
+    ),
+    "percent_divide": BinaryOp(
         lambda x, y: (x / y).replace([np.inf, -np.inf], np.nan),
-        '{col1} is this percent of {col2}',
-        PercentFormat
+        "{col1} is this percent of {col2}",
+        PercentFormat,
     ),
-    'percent_of_column_sum': UnaryOp(
-        lambda x: (x / x.sum()) if (all(x.isna()) or x.sum() != 0) else 'Column sum is 0.',
-        'Percent of {col}',
-        PercentFormat
-    )
+    "percent_of_column_sum": UnaryOp(
+        lambda x: (x / x.sum())
+        if (all(x.isna()) or x.sum() != 0)
+        else "Column sum is 0.",
+        "Percent of {col}",
+        PercentFormat,
+    ),
 }
 
 
 def render(table, params, *, input_columns):
-    operation = Operations[params['operation']]
+    operation = Operations[params["operation"]]
     return operation.render(table, params, input_columns)
 
 
@@ -229,15 +225,15 @@ def _migrate_params_v0_to_v1(params):
     multiply_additional (a statictext) was added, and the time after.
     """
     return {
-        'operation': params['operation'],
-        'colnames': params['colnames'],
-        'col1': params['col1'],
-        'col2': params['col2'],
-        'single_value_selector': params['single_value_selector'],
-        'single_value_col': params['single_value_col'],
-        'single_value_row': params['single_value_row'],
-        'single_value_constant': params['single_value_constant'],
-        'outcolname': params.get('outcolname', ''),  # it may not be there
+        "operation": params["operation"],
+        "colnames": params["colnames"],
+        "col1": params["col1"],
+        "col2": params["col2"],
+        "single_value_selector": params["single_value_selector"],
+        "single_value_col": params["single_value_col"],
+        "single_value_row": params["single_value_row"],
+        "single_value_constant": params["single_value_constant"],
+        "outcolname": params.get("outcolname", ""),  # it may not be there
     }
 
 
@@ -245,44 +241,39 @@ def _migrate_params_v1_to_v2(params):
     """v1: menus are numeric; v2: menus are text."""
     return {
         **params,
-        'operation': {
-            0: 'add',
-            1: 'subtract',
-            2: 'multiply',
-            3: 'divide',
+        "operation": {
+            0: "add",
+            1: "subtract",
+            2: "multiply",
+            3: "divide",
             # separator
-            5: 'mean',
-            6: 'median',
-            7: 'minimum',
-            8: 'maximum',
+            5: "mean",
+            6: "median",
+            7: "minimum",
+            8: "maximum",
             # separator
-            10: 'percent_change',
-            11: 'percent_multiply',
-            12: 'percent_divide',
+            10: "percent_change",
+            11: "percent_multiply",
+            12: "percent_divide",
             # separator
-            13: 'percent_of_column_sum'
-        }.get(params['operation'], 'add'),
-        'single_value_selector': {
-            0: 'none',
-            1: 'cell',
-            2: 'constant',
-        }.get(params['single_value_selector'], 'none'),
+            13: "percent_of_column_sum",
+        }.get(params["operation"], "add"),
+        "single_value_selector": {0: "none", 1: "cell", 2: "constant"}.get(
+            params["single_value_selector"], "none"
+        ),
     }
 
 
 def _migrate_params_v2_to_v3(params):
     """v2: colnames is comma-separated str. v3: it's List[str]."""
-    return {
-        **params,
-        'colnames': [c for c in params['colnames'].split(',') if c],
-    }
+    return {**params, "colnames": [c for c in params["colnames"].split(",") if c]}
 
 
 def migrate_params(params):
-    if 'xtext' in params:
+    if "xtext" in params:
         params = _migrate_params_v0_to_v1(params)
-    if isinstance(params['operation'], int):
+    if isinstance(params["operation"], int):
         params = _migrate_params_v1_to_v2(params)
-    if isinstance(params['colnames'], str):
+    if isinstance(params["colnames"], str):
         params = _migrate_params_v2_to_v3(params)
     return params
