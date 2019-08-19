@@ -173,7 +173,8 @@ class UnaryOp:
         }
 
 
-PercentFormat = lambda x_fmt, y_fmt: "{:,.1%}"
+PercentFormat = "{:,.1%}"
+PercentFormatCallable = lambda x_fmt, y_fmt: PercentFormat
 
 Operations = {
     "add": MulticolumnOp("sum", "Sum of {cols}"),
@@ -190,7 +191,7 @@ Operations = {
     "percent_change": BinaryOp(
         lambda x, y: ((y - x) / x).replace([np.inf, -np.inf], np.nan),
         "Percent change {col1} to {col2}",
-        PercentFormat,
+        PercentFormatCallable,
     ),
     "percent_multiply": BinaryOp(
         lambda x, y, x_fmt, y_fmt: x * y if x_fmt == "{:,.1%}" else x * y / 100,
@@ -200,12 +201,14 @@ Operations = {
     "percent_divide": BinaryOp(
         lambda x, y: (x / y).replace([np.inf, -np.inf], np.nan),
         "{col1} is this percent of {col2}",
-        PercentFormat,
+        PercentFormatCallable,
     ),
     "percent_of_column_sum": UnaryOp(
-        lambda x: (x / x.sum())
-        if (all(x.isna()) or x.sum() != 0)
-        else "Column sum is 0.",
+        (
+            lambda x: (x / x.sum())
+            if (all(x.isna()) or x.sum() != 0)
+            else "Column sum is 0."
+        ),
         "Percent of {col}",
         PercentFormat,
     ),
