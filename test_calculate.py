@@ -87,6 +87,34 @@ class MigrateParamsTest(unittest.TestCase):
             },
         )
 
+    def test_v0_alt(self):
+        self.assertEqual(
+            calculate.migrate_params(
+                {
+                    "operation": 5,
+                    "colnames": "",
+                    "col1": "",
+                    "col2": "",
+                    "single_value_selector": 2,
+                    "single_value_col": "",
+                    "single_value_row": 1,
+                    "single_value_constant": 1.0,
+                    # 'outcolname': '', -- it can be missing!
+                }
+            ),
+            {
+                "operation": "mean",
+                "colnames": [],
+                "col1": "",
+                "col2": "",
+                "single_value_selector": "constant",
+                "single_value_col": "",
+                "single_value_row": 1,
+                "single_value_constant": 1.0,
+                "outcolname": "",
+            },
+        )
+
     def test_v1(self):
         self.assertEqual(
             calculate.migrate_params(

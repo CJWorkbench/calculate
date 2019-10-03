@@ -273,7 +273,7 @@ def _migrate_params_v2_to_v3(params):
 
 
 def migrate_params(params):
-    if "xtext" in params:
+    if "xtext" in params or "outcolname" not in params:
         params = _migrate_params_v0_to_v1(params)
     if isinstance(params["operation"], int):
         params = _migrate_params_v1_to_v2(params)
