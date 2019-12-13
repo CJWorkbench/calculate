@@ -38,6 +38,8 @@ class MulticolumnOp:
                 return "Row number cannot be less than 1"
             elif row >= table.shape[0]:
                 return "Row number cannot be greater than %d" % table.shape[0]
+            if not col:
+                return "Please select the cell value's column"
             value = table[col][row]
             if pd.isnull(value):
                 return "The chosen cell does not contain a number"

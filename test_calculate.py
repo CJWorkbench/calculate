@@ -374,6 +374,27 @@ class RenderTest(unittest.TestCase):
         )
         self.assertEqual(result, "The chosen cell does not contain a number")
 
+    def test_add_cell_no_column_selected(self):
+        result = render(
+            pd.DataFrame({"b": [1.0, 1.1], "c": [2.0, 2.1], "d": [3.0, 3.1]}),
+            P(
+                operation="add",
+                colnames=["b", "c", "d"],
+                outcolname="X",
+                single_value_selector="cell",
+                single_value_row=2,
+                single_value_col="",
+            ),
+            {
+                "b": Column("b", "number", "{:,.2f}"),
+                "c": Column("c", "number", "{:,.1%}"),
+                "d": Column("d", "number", "{:,}"),
+            },
+        )
+        self.assertEqual(
+            result, "Please select the cell value's column"
+        )
+
     def test_add_cell_nan(self):
         result = render(
             pd.DataFrame({"b": [1.0, 1.1], "c": [2.0, 2.1], "d": [3.0, np.nan]}),
