@@ -438,6 +438,7 @@ class RenderTest(unittest.TestCase):
                 "X": [0.0],  # not divide-by-zero error or inf or -inf.
             }
         )
+        assert_frame_equal(result["dataframe"], expected)
 
     def test_subtract(self):
         result = render(
