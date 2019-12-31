@@ -34,7 +34,7 @@ parameters:
     value: [ add, multiply, mean, median, minimum, maximum ]
 - id_name: add_additional
   type: statictext
-  name: and add
+  name: and
   visible_if:
     id_name: operation
     value: [ add ]
