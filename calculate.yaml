@@ -3,7 +3,7 @@ name: Calculate
 category: Analyze
 icon: calculator
 description: "Add, subtract, multiply, divide, minimum, maximum, average, median, and percentages between columns"
-help_url: "https://github.com/cjworkbench/hello-workbench"
+help_url: "en/articles/3604170"
 parameters:
 - id_name: operation
   type: menu
