@@ -1,0 +1,114 @@
+# Greek translations for PROJECT.
+# Copyright (C) 2020 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2020-01-07 06:44+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: el\n"
+"Language-Team: el <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.7.0\n"
+
+msgid "_spec.name"
+msgstr ""
+
+msgid "_spec.description"
+msgstr ""
+
+msgid "_spec.parameters.operation.name"
+msgstr ""
+
+msgid "_spec.parameters.operation.options.add.label"
+msgstr ""
+
+msgid "_spec.parameters.operation.options.subtract.label"
+msgstr ""
+
+msgid "_spec.parameters.operation.options.multiply.label"
+msgstr ""
+
+msgid "_spec.parameters.operation.options.divide.label"
+msgstr ""
+
+msgid "_spec.parameters.operation.options.mean.label"
+msgstr ""
+
+msgid "_spec.parameters.operation.options.median.label"
+msgstr ""
+
+msgid "_spec.parameters.operation.options.minimum.label"
+msgstr ""
+
+msgid "_spec.parameters.operation.options.maximum.label"
+msgstr ""
+
+msgid "_spec.parameters.operation.options.percent_change.label"
+msgstr ""
+
+msgid "_spec.parameters.operation.options.percent_multiply.label"
+msgstr ""
+
+msgid "_spec.parameters.operation.options.percent_divide.label"
+msgstr ""
+
+msgid "_spec.parameters.operation.options.percent_of_column_sum.label"
+msgstr ""
+
+msgid "_spec.parameters.add_additional.name"
+msgstr ""
+
+msgid "_spec.parameters.multiply_additional.name"
+msgstr ""
+
+msgid "_spec.parameters.single_value_selector.options.none.label"
+msgstr ""
+
+msgid "_spec.parameters.single_value_selector.options.cell.label"
+msgstr ""
+
+msgid "_spec.parameters.single_value_selector.options.constant.label"
+msgstr ""
+
+msgid "_spec.parameters.single_value_col.name"
+msgstr ""
+
+msgid "_spec.parameters.single_value_row.name"
+msgstr ""
+
+msgid "_spec.parameters.single_value_constant.name"
+msgstr ""
+
+msgid "_spec.parameters.oldvaluetext.name"
+msgstr ""
+
+msgid "_spec.parameters.xtext.name"
+msgstr ""
+
+msgid "_spec.parameters.subtracttext.name"
+msgstr ""
+
+msgid "_spec.parameters.dividetext.name"
+msgstr ""
+
+msgid "_spec.parameters.newvaluetext.name"
+msgstr ""
+
+msgid "_spec.parameters.ytext.name"
+msgstr ""
+
+msgid "_spec.parameters.outcolname.name"
+msgstr ""
+
+msgid "_spec.parameters.outcolname.placeholder"
+msgstr ""
+

@@ -1,0 +1,116 @@
+# English translations for PROJECT.
+# Copyright (C) 2020 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2020-01-07 06:44+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.7.0\n"
+
+msgid "_spec.name"
+msgstr "Calculate"
+
+msgid "_spec.description"
+msgstr ""
+"Add, subtract, multiply, divide, minimum, maximum, average, median, and "
+"percentages between columns"
+
+msgid "_spec.parameters.operation.name"
+msgstr "Operation"
+
+msgid "_spec.parameters.operation.options.add.label"
+msgstr "Sum"
+
+msgid "_spec.parameters.operation.options.subtract.label"
+msgstr "Subtract"
+
+msgid "_spec.parameters.operation.options.multiply.label"
+msgstr "Multiply"
+
+msgid "_spec.parameters.operation.options.divide.label"
+msgstr "Divide"
+
+msgid "_spec.parameters.operation.options.mean.label"
+msgstr "Average"
+
+msgid "_spec.parameters.operation.options.median.label"
+msgstr "Median"
+
+msgid "_spec.parameters.operation.options.minimum.label"
+msgstr "Minimum"
+
+msgid "_spec.parameters.operation.options.maximum.label"
+msgstr "Maximum"
+
+msgid "_spec.parameters.operation.options.percent_change.label"
+msgstr "Percentage change"
+
+msgid "_spec.parameters.operation.options.percent_multiply.label"
+msgstr "What is X percent of Y?"
+
+msgid "_spec.parameters.operation.options.percent_divide.label"
+msgstr "X is what percent of Y?"
+
+msgid "_spec.parameters.operation.options.percent_of_column_sum.label"
+msgstr "Percentage of column sum"
+
+msgid "_spec.parameters.add_additional.name"
+msgstr "and"
+
+msgid "_spec.parameters.multiply_additional.name"
+msgstr "and by"
+
+msgid "_spec.parameters.single_value_selector.options.none.label"
+msgstr "None"
+
+msgid "_spec.parameters.single_value_selector.options.cell.label"
+msgstr "Cell value"
+
+msgid "_spec.parameters.single_value_selector.options.constant.label"
+msgstr "Constant value"
+
+msgid "_spec.parameters.single_value_col.name"
+msgstr "Column"
+
+msgid "_spec.parameters.single_value_row.name"
+msgstr "Row"
+
+msgid "_spec.parameters.single_value_constant.name"
+msgstr "Value"
+
+msgid "_spec.parameters.oldvaluetext.name"
+msgstr "Old value"
+
+msgid "_spec.parameters.xtext.name"
+msgstr "X"
+
+msgid "_spec.parameters.subtracttext.name"
+msgstr "minus"
+
+msgid "_spec.parameters.dividetext.name"
+msgstr "by"
+
+msgid "_spec.parameters.newvaluetext.name"
+msgstr "New value"
+
+msgid "_spec.parameters.ytext.name"
+msgstr "Y"
+
+msgid "_spec.parameters.outcolname.name"
+msgstr "Output column name"
+
+msgid "_spec.parameters.outcolname.placeholder"
+msgstr "(optional)"
+
