@@ -375,8 +375,7 @@ class RenderTest(unittest.TestCase):
             },
         )
         self.assertEqual(
-            result,
-            I18nMessage("MulticolumnOp._get_single_value.notANumber", {}, "module"),
+            result, I18nMessage("badParam.single_value_col.notANumber", {}, "module"),
         )
 
     def test_add_cell_no_column_selected(self):
@@ -397,8 +396,7 @@ class RenderTest(unittest.TestCase):
             },
         )
         self.assertEqual(
-            result,
-            I18nMessage("MulticolumnOp._get_single_value.noColumn", {}, "module"),
+            result, I18nMessage("badParam.single_value_col.missing", {}, "module"),
         )
 
     def test_add_cell_nan(self):
@@ -419,8 +417,7 @@ class RenderTest(unittest.TestCase):
             },
         )
         self.assertEqual(
-            result,
-            I18nMessage("MulticolumnOp._get_single_value.emptyCell", {}, "module"),
+            result, I18nMessage("badParam.single_value_col.notANumber", {}, "module"),
         )
 
     def test_multiply_constant(self):
@@ -617,7 +614,7 @@ class RenderTest(unittest.TestCase):
         )
         self.assertEqual(
             result,
-            I18nMessage("Operations.percent_of_column_sum.sumIsZero", {}, "module"),
+            I18nMessage("badData.percent_of_column_sum.sumIsZero", {}, "module"),
         )
 
 

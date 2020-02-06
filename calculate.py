@@ -38,33 +38,31 @@ class MulticolumnOp:
             row = params["single_value_row"] - 1
             if row < 0:
                 return i18n.trans(
-                    "MulticolumnOp._get_single_value.negativeRow",
+                    "badParam.single_value_row.tooSmall",
                     "Row number cannot be less than 1",
                 )
             elif row >= table.shape[0]:
                 return i18n.trans(
-                    "MulticolumnOp._get_single_value.tooBigRow",
+                    "badParam.single_value_row.tooBig",
                     "Row number cannot be greater than {limit}",
                     {"limit": table.shape[0]},
                 )
             if not col:
                 return i18n.trans(
-                    "MulticolumnOp._get_single_value.noColumn",
+                    "badParam.single_value_col.missing",
                     "Please select the cell value's column",
                 )
             value = table[col][row]
+            _error_not_a_number = i18n.trans(
+                "badParam.single_value_col.notANumber",
+                "The chosen cell does not contain a number",
+            )
             if pd.isnull(value):
-                return i18n.trans(
-                    "MulticolumnOp._get_single_value.emptyCell",
-                    "The chosen cell does not contain a number",
-                )
+                return _error_not_a_number
             try:
                 return float(value)
             except ValueError:
-                return i18n.trans(
-                    "MulticolumnOp._get_single_value.notANumber",
-                    "The chosen cell does not contain a number",
-                )
+                return _error_not_a_number
         else:
             return params["single_value_constant"]
 
@@ -228,7 +226,7 @@ Operations = {
             lambda x: (x / x.sum())
             if (all(x.isna()) or x.sum() != 0)
             else i18n.trans(
-                "Operations.percent_of_column_sum.sumIsZero", "Column sum is 0."
+                "badData.percent_of_column_sum.sumIsZero", "Column sum is 0."
             )
         ),
         "Percent of {col}",

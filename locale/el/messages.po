@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-02-06 20:59+0000\n"
+"POT-Creation-Date: 2020-02-06 21:36+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: el\n"
@@ -112,27 +112,23 @@ msgstr ""
 msgid "_spec.parameters.outcolname.placeholder"
 msgstr ""
 
-#: calculate.py:39
-msgid "MulticolumnOp._get_single_value.negativeRow"
+#: calculate.py:40
+msgid "badParam.single_value_row.tooSmall"
 msgstr ""
 
-#: calculate.py:44
-msgid "MulticolumnOp._get_single_value.tooBigRow"
+#: calculate.py:45
+msgid "badParam.single_value_row.tooBig"
 msgstr ""
 
-#: calculate.py:50
-msgid "MulticolumnOp._get_single_value.noColumn"
+#: calculate.py:51
+msgid "badParam.single_value_col.missing"
 msgstr ""
 
 #: calculate.py:56
-msgid "MulticolumnOp._get_single_value.emptyCell"
+msgid "badParam.single_value_col.notANumber"
 msgstr ""
 
-#: calculate.py:63
-msgid "MulticolumnOp._get_single_value.notANumber"
-msgstr ""
-
-#: calculate.py:229
-msgid "Operations.percent_of_column_sum.sumIsZero"
+#: calculate.py:228
+msgid "badData.percent_of_column_sum.sumIsZero"
 msgstr ""
 
