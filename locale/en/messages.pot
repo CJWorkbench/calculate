@@ -1,140 +1,154 @@
-# English translations for PROJECT.
-# Copyright (C) 2020 ORGANIZATION
-# This file is distributed under the same license as the PROJECT project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
-#
-#, fuzzy
-msgid ""
-msgstr ""
-"Project-Id-Version: PROJECT VERSION\n"
-"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-02-06 20:59+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language: en\n"
-"Language-Team: en <LL@li.org>\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.8.0\n"
-
+#. default-message: Calculate
 msgid "_spec.name"
-msgstr "Calculate"
+msgstr ""
 
+#. default-message: Add, subtract, multiply, divide, minimum, maximum, average, median, and percentages between columns
 msgid "_spec.description"
 msgstr ""
-"Add, subtract, multiply, divide, minimum, maximum, average, median, and "
-"percentages between columns"
 
+#. default-message: Operation
 msgid "_spec.parameters.operation.name"
-msgstr "Operation"
+msgstr ""
 
+#. default-message: Sum
 msgid "_spec.parameters.operation.options.add.label"
-msgstr "Sum"
+msgstr ""
 
+#. default-message: Subtract
 msgid "_spec.parameters.operation.options.subtract.label"
-msgstr "Subtract"
+msgstr ""
 
+#. default-message: Multiply
 msgid "_spec.parameters.operation.options.multiply.label"
-msgstr "Multiply"
+msgstr ""
 
+#. default-message: Divide
 msgid "_spec.parameters.operation.options.divide.label"
-msgstr "Divide"
+msgstr ""
 
+#. default-message: Average
 msgid "_spec.parameters.operation.options.mean.label"
-msgstr "Average"
+msgstr ""
 
+#. default-message: Median
 msgid "_spec.parameters.operation.options.median.label"
-msgstr "Median"
+msgstr ""
 
+#. default-message: Minimum
 msgid "_spec.parameters.operation.options.minimum.label"
-msgstr "Minimum"
+msgstr ""
 
+#. default-message: Maximum
 msgid "_spec.parameters.operation.options.maximum.label"
-msgstr "Maximum"
+msgstr ""
 
+#. default-message: Percentage change
 msgid "_spec.parameters.operation.options.percent_change.label"
-msgstr "Percentage change"
+msgstr ""
 
+#. default-message: What is X percent of Y?
 msgid "_spec.parameters.operation.options.percent_multiply.label"
-msgstr "What is X percent of Y?"
+msgstr ""
 
+#. default-message: X is what percent of Y?
 msgid "_spec.parameters.operation.options.percent_divide.label"
-msgstr "X is what percent of Y?"
+msgstr ""
 
+#. default-message: Percentage of column sum
 msgid "_spec.parameters.operation.options.percent_of_column_sum.label"
-msgstr "Percentage of column sum"
+msgstr ""
 
+#. default-message: and
 msgid "_spec.parameters.add_additional.name"
-msgstr "and"
+msgstr ""
 
+#. default-message: and by
 msgid "_spec.parameters.multiply_additional.name"
-msgstr "and by"
+msgstr ""
 
+#. default-message: None
 msgid "_spec.parameters.single_value_selector.options.none.label"
-msgstr "None"
+msgstr ""
 
+#. default-message: Cell value
 msgid "_spec.parameters.single_value_selector.options.cell.label"
-msgstr "Cell value"
+msgstr ""
 
+#. default-message: Constant value
 msgid "_spec.parameters.single_value_selector.options.constant.label"
-msgstr "Constant value"
+msgstr ""
 
+#. default-message: Column
 msgid "_spec.parameters.single_value_col.name"
-msgstr "Column"
+msgstr ""
 
+#. default-message: Row
 msgid "_spec.parameters.single_value_row.name"
-msgstr "Row"
+msgstr ""
 
+#. default-message: Value
 msgid "_spec.parameters.single_value_constant.name"
-msgstr "Value"
+msgstr ""
 
+#. default-message: Old value
 msgid "_spec.parameters.oldvaluetext.name"
-msgstr "Old value"
+msgstr ""
 
+#. default-message: X
 msgid "_spec.parameters.xtext.name"
-msgstr "X"
+msgstr ""
 
+#. default-message: minus
 msgid "_spec.parameters.subtracttext.name"
-msgstr "minus"
+msgstr ""
 
+#. default-message: by
 msgid "_spec.parameters.dividetext.name"
-msgstr "by"
+msgstr ""
 
+#. default-message: New value
 msgid "_spec.parameters.newvaluetext.name"
-msgstr "New value"
+msgstr ""
 
+#. default-message: Y
 msgid "_spec.parameters.ytext.name"
-msgstr "Y"
+msgstr ""
 
+#. default-message: Output column name
 msgid "_spec.parameters.outcolname.name"
-msgstr "Output column name"
+msgstr ""
 
+#. default-message: (optional)
 msgid "_spec.parameters.outcolname.placeholder"
-msgstr "(optional)"
+msgstr ""
 
+#. default-message: Row number cannot be less than 1
 #: calculate.py:39
 msgid "MulticolumnOp._get_single_value.negativeRow"
-msgstr "Row number cannot be less than 1"
+msgstr ""
 
+#. default-message: Row number cannot be greater than {limit}
 #: calculate.py:44
 msgid "MulticolumnOp._get_single_value.tooBigRow"
-msgstr "Row number cannot be greater than {limit}"
+msgstr ""
 
+#. default-message: Please select the cell value's column
 #: calculate.py:50
 msgid "MulticolumnOp._get_single_value.noColumn"
-msgstr "Please select the cell value's column"
+msgstr ""
 
+#. default-message: The chosen cell does not contain a number
 #: calculate.py:56
 msgid "MulticolumnOp._get_single_value.emptyCell"
-msgstr "The chosen cell does not contain a number"
+msgstr ""
 
+#. default-message: The chosen cell does not contain a number
 #: calculate.py:63
 msgid "MulticolumnOp._get_single_value.notANumber"
-msgstr "The chosen cell does not contain a number"
+msgstr ""
 
+#. default-message: Column sum is 0.
 #: calculate.py:229
 msgid "Operations.percent_of_column_sum.sumIsZero"
-msgstr "Column sum is 0."
+msgstr ""
 
