@@ -3,7 +3,7 @@ from collections import namedtuple
 
 import numpy as np
 import pandas as pd
-from cjwmodule.i18n import I18nMessage
+from cjwmodule.testing.i18n import i18n_message
 from pandas.api.types import is_numeric_dtype
 from pandas.testing import assert_frame_equal
 
@@ -375,7 +375,7 @@ class RenderTest(unittest.TestCase):
             },
         )
         self.assertEqual(
-            result, I18nMessage("badParam.single_value_col.notANumber", {}, "module"),
+            result, i18n_message("badParam.single_value_col.notANumber"),
         )
 
     def test_add_cell_no_column_selected(self):
@@ -396,7 +396,7 @@ class RenderTest(unittest.TestCase):
             },
         )
         self.assertEqual(
-            result, I18nMessage("badParam.single_value_col.missing", {}, "module"),
+            result, i18n_message("badParam.single_value_col.missing"),
         )
 
     def test_add_cell_nan(self):
@@ -417,7 +417,7 @@ class RenderTest(unittest.TestCase):
             },
         )
         self.assertEqual(
-            result, I18nMessage("badParam.single_value_col.notANumber", {}, "module"),
+            result, i18n_message("badParam.single_value_col.notANumber"),
         )
 
     def test_multiply_constant(self):
@@ -613,8 +613,7 @@ class RenderTest(unittest.TestCase):
             pd.DataFrame({"a": [-1, 1]}), P(operation="percent_of_column_sum", col1="a")
         )
         self.assertEqual(
-            result,
-            I18nMessage("badData.percent_of_column_sum.sumIsZero", {}, "module"),
+            result, i18n_message("badData.percent_of_column_sum.sumIsZero"),
         )
 
 
