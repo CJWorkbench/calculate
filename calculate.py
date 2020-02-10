@@ -1,8 +1,10 @@
 from dataclasses import dataclass
 from inspect import signature
 from typing import Any, Callable, Dict, List, Optional
+
 import numpy as np
 import pandas as pd
+from cjwmodule import i18n
 
 
 @dataclass
@@ -35,18 +37,32 @@ class MulticolumnOp:
             # go from 1-based in the UI to 0 based in the table
             row = params["single_value_row"] - 1
             if row < 0:
-                return "Row number cannot be less than 1"
+                return i18n.trans(
+                    "badParam.single_value_row.tooSmall",
+                    "Row number cannot be less than 1",
+                )
             elif row >= table.shape[0]:
-                return "Row number cannot be greater than %d" % table.shape[0]
+                return i18n.trans(
+                    "badParam.single_value_row.tooBig",
+                    "Row number cannot be greater than {limit}",
+                    {"limit": table.shape[0]},
+                )
             if not col:
-                return "Please select the cell value's column"
+                return i18n.trans(
+                    "badParam.single_value_col.missing",
+                    "Please select the cell value's column",
+                )
             value = table[col][row]
+            _error_not_a_number = i18n.trans(
+                "badParam.single_value_col.notANumber",
+                "The chosen cell does not contain a number",
+            )
             if pd.isnull(value):
-                return "The chosen cell does not contain a number"
+                return _error_not_a_number
             try:
                 return float(value)
             except ValueError:
-                return "The chosen cell does not contain a number"
+                return _error_not_a_number
         else:
             return params["single_value_constant"]
 
@@ -74,7 +90,7 @@ class MulticolumnOp:
         # Optional add/multiply all rows by a scalar
         if extra_scalar:
             val = self._get_single_value(table, params)
-            if isinstance(val, str):
+            if isinstance(val, i18n.I18nMessage):
                 return val  # error essage
             if self.agg == "sum":
                 table[newcolname] += val
@@ -162,7 +178,7 @@ class UnaryOp:
             newcolname = self.default_result_column_name(col1)
         result = self.fn(table[col1])
 
-        if isinstance(result, str):
+        if isinstance(result, i18n.I18nMessage):
             return result  # error message
 
         table[newcolname] = result
@@ -209,7 +225,9 @@ Operations = {
         (
             lambda x: (x / x.sum())
             if (all(x.isna()) or x.sum() != 0)
-            else "Column sum is 0."
+            else i18n.trans(
+                "badData.percent_of_column_sum.sumIsZero", "Column sum is 0."
+            )
         ),
         "Percent of {col}",
         PercentFormat,

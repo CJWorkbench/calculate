@@ -1,0 +1,149 @@
+#. default-message: Calculate
+msgid "_spec.name"
+msgstr ""
+
+#. default-message: Add, subtract, multiply, divide, minimum, maximum, average, median, and percentages between columns
+msgid "_spec.description"
+msgstr ""
+
+#. default-message: Operation
+msgid "_spec.parameters.operation.name"
+msgstr ""
+
+#. default-message: Sum
+msgid "_spec.parameters.operation.options.add.label"
+msgstr ""
+
+#. default-message: Subtract
+msgid "_spec.parameters.operation.options.subtract.label"
+msgstr ""
+
+#. default-message: Multiply
+msgid "_spec.parameters.operation.options.multiply.label"
+msgstr ""
+
+#. default-message: Divide
+msgid "_spec.parameters.operation.options.divide.label"
+msgstr ""
+
+#. default-message: Average
+msgid "_spec.parameters.operation.options.mean.label"
+msgstr ""
+
+#. default-message: Median
+msgid "_spec.parameters.operation.options.median.label"
+msgstr ""
+
+#. default-message: Minimum
+msgid "_spec.parameters.operation.options.minimum.label"
+msgstr ""
+
+#. default-message: Maximum
+msgid "_spec.parameters.operation.options.maximum.label"
+msgstr ""
+
+#. default-message: Percentage change
+msgid "_spec.parameters.operation.options.percent_change.label"
+msgstr ""
+
+#. default-message: What is X percent of Y?
+msgid "_spec.parameters.operation.options.percent_multiply.label"
+msgstr ""
+
+#. default-message: X is what percent of Y?
+msgid "_spec.parameters.operation.options.percent_divide.label"
+msgstr ""
+
+#. default-message: Percentage of column sum
+msgid "_spec.parameters.operation.options.percent_of_column_sum.label"
+msgstr ""
+
+#. default-message: and
+msgid "_spec.parameters.add_additional.name"
+msgstr ""
+
+#. default-message: and by
+msgid "_spec.parameters.multiply_additional.name"
+msgstr ""
+
+#. default-message: None
+msgid "_spec.parameters.single_value_selector.options.none.label"
+msgstr ""
+
+#. default-message: Cell value
+msgid "_spec.parameters.single_value_selector.options.cell.label"
+msgstr ""
+
+#. default-message: Constant value
+msgid "_spec.parameters.single_value_selector.options.constant.label"
+msgstr ""
+
+#. default-message: Column
+msgid "_spec.parameters.single_value_col.name"
+msgstr ""
+
+#. default-message: Row
+msgid "_spec.parameters.single_value_row.name"
+msgstr ""
+
+#. default-message: Value
+msgid "_spec.parameters.single_value_constant.name"
+msgstr ""
+
+#. default-message: Old value
+msgid "_spec.parameters.oldvaluetext.name"
+msgstr ""
+
+#. default-message: X
+msgid "_spec.parameters.xtext.name"
+msgstr ""
+
+#. default-message: minus
+msgid "_spec.parameters.subtracttext.name"
+msgstr ""
+
+#. default-message: by
+msgid "_spec.parameters.dividetext.name"
+msgstr ""
+
+#. default-message: New value
+msgid "_spec.parameters.newvaluetext.name"
+msgstr ""
+
+#. default-message: Y
+msgid "_spec.parameters.ytext.name"
+msgstr ""
+
+#. default-message: Output column name
+msgid "_spec.parameters.outcolname.name"
+msgstr ""
+
+#. default-message: (optional)
+msgid "_spec.parameters.outcolname.placeholder"
+msgstr ""
+
+#. default-message: Row number cannot be less than 1
+#: calculate.py:40
+msgid "badParam.single_value_row.tooSmall"
+msgstr ""
+
+#. default-message: Row number cannot be greater than {limit}
+#: calculate.py:45
+msgid "badParam.single_value_row.tooBig"
+msgstr ""
+
+#. default-message: Please select the cell value's column
+#: calculate.py:51
+msgid "badParam.single_value_col.missing"
+msgstr ""
+
+#. default-message: The chosen cell does not contain a number
+#: calculate.py:56
+msgid "badParam.single_value_col.notANumber"
+msgstr ""
+
+#. default-message: Column sum is 0.
+#: calculate.py:228
+msgid "badData.percent_of_column_sum.sumIsZero"
+msgstr ""
+
