@@ -1,11 +1,13 @@
-from collections import namedtuple
 import unittest
+from collections import namedtuple
+
 import numpy as np
 import pandas as pd
+from cjwmodule.testing.i18n import i18n_message
 from pandas.api.types import is_numeric_dtype
 from pandas.testing import assert_frame_equal
-import calculate
 
+import calculate
 
 DefaultParams = {
     "operation": "add",
@@ -372,7 +374,9 @@ class RenderTest(unittest.TestCase):
                 "s": Column("s", "text", ""),
             },
         )
-        self.assertEqual(result, "The chosen cell does not contain a number")
+        self.assertEqual(
+            result, i18n_message("badParam.single_value_col.notANumber"),
+        )
 
     def test_add_cell_no_column_selected(self):
         result = render(
@@ -392,7 +396,7 @@ class RenderTest(unittest.TestCase):
             },
         )
         self.assertEqual(
-            result, "Please select the cell value's column"
+            result, i18n_message("badParam.single_value_col.missing"),
         )
 
     def test_add_cell_nan(self):
@@ -412,7 +416,9 @@ class RenderTest(unittest.TestCase):
                 "d": Column("d", "number", "{:,}"),
             },
         )
-        self.assertEqual(result, "The chosen cell does not contain a number")
+        self.assertEqual(
+            result, i18n_message("badParam.single_value_col.notANumber"),
+        )
 
     def test_multiply_constant(self):
         result = render(
@@ -606,7 +612,9 @@ class RenderTest(unittest.TestCase):
         result = render(
             pd.DataFrame({"a": [-1, 1]}), P(operation="percent_of_column_sum", col1="a")
         )
-        self.assertEqual(result, "Column sum is 0.")
+        self.assertEqual(
+            result, i18n_message("badData.percent_of_column_sum.sumIsZero"),
+        )
 
 
 if __name__ == "__main__":
