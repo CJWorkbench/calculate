@@ -2,116 +2,117 @@
 # Copyright (C) 2020 ORGANIZATION
 # This file is distributed under the same license as the PROJECT project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
-# 
+#
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-02-06 21:36+0000\n"
-"PO-Revision-Date: 2020-02-17 21:02+0000\n"
-"Last-Translator: Adam Hooper <adam@adamhooper.com>\n"
-"Language-Team: el <LL@li.org>\n"
+"POT-Creation-Date: 2020-02-18 15:23+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: el\n"
+"Language-Team: el <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Generated-By: Babel 2.8.0\n"
-"X-Generator: Pontoon\n"
 
 msgid "_spec.name"
-msgstr "Calculate"
+msgstr "Υπολογισμός"
 
 msgid "_spec.description"
 msgstr ""
+"Πρόσθεση, αφαίρεση, πολλαπλασιασμός, διαίρεση, ελάχιστο, μέγιστο, μέσος "
+"όρος, διάμεσος και ποσοστιαία μεταβολή μεταξύ στηλών"
 
 msgid "_spec.parameters.operation.name"
-msgstr ""
+msgstr "Πράξη"
 
 msgid "_spec.parameters.operation.options.add.label"
-msgstr ""
+msgstr "Πρόσθεση"
 
 msgid "_spec.parameters.operation.options.subtract.label"
-msgstr ""
+msgstr "Αφαίρεση"
 
 msgid "_spec.parameters.operation.options.multiply.label"
-msgstr ""
+msgstr "Πολλαπλασιασμός"
 
 msgid "_spec.parameters.operation.options.divide.label"
-msgstr ""
+msgstr "Διαίρεση"
 
 msgid "_spec.parameters.operation.options.mean.label"
-msgstr ""
+msgstr "Μέσος όρος"
 
 msgid "_spec.parameters.operation.options.median.label"
-msgstr ""
+msgstr "Διάμεσος"
 
 msgid "_spec.parameters.operation.options.minimum.label"
-msgstr ""
+msgstr "Ελάχιστο"
 
 msgid "_spec.parameters.operation.options.maximum.label"
-msgstr ""
+msgstr "Μέγιστο"
 
 msgid "_spec.parameters.operation.options.percent_change.label"
-msgstr ""
+msgstr "Ποσοστιαία μεταβολή"
 
 msgid "_spec.parameters.operation.options.percent_multiply.label"
-msgstr ""
+msgstr "Ποιο είναι το X τοις εκατό του Y;"
 
 msgid "_spec.parameters.operation.options.percent_divide.label"
-msgstr ""
+msgstr "Τι ποσοστό του Υ είναι το X;"
 
 msgid "_spec.parameters.operation.options.percent_of_column_sum.label"
-msgstr ""
+msgstr "Ποσοστό του αθροίσματος της στήλης"
 
 msgid "_spec.parameters.add_additional.name"
-msgstr ""
+msgstr "και"
 
 msgid "_spec.parameters.multiply_additional.name"
-msgstr ""
+msgstr "και επί"
 
 msgid "_spec.parameters.single_value_selector.options.none.label"
-msgstr ""
+msgstr "Κανένα"
 
 msgid "_spec.parameters.single_value_selector.options.cell.label"
-msgstr ""
+msgstr "Τιμή κελιού"
 
 msgid "_spec.parameters.single_value_selector.options.constant.label"
-msgstr ""
+msgstr "Σταθερή τιμή"
 
 msgid "_spec.parameters.single_value_col.name"
-msgstr ""
+msgstr "Στήλη"
 
 msgid "_spec.parameters.single_value_row.name"
-msgstr ""
+msgstr "Σειρά"
 
 msgid "_spec.parameters.single_value_constant.name"
-msgstr ""
+msgstr "Τιμή"
 
 msgid "_spec.parameters.oldvaluetext.name"
-msgstr ""
+msgstr "Παλιά τιμή"
 
 msgid "_spec.parameters.xtext.name"
-msgstr ""
+msgstr "Χ"
 
 msgid "_spec.parameters.subtracttext.name"
-msgstr ""
+msgstr "μείον"
 
 msgid "_spec.parameters.dividetext.name"
-msgstr ""
+msgstr "διά"
 
 msgid "_spec.parameters.newvaluetext.name"
-msgstr ""
+msgstr "Νέα τιμή"
 
 msgid "_spec.parameters.ytext.name"
-msgstr ""
+msgstr "Υ"
 
 msgid "_spec.parameters.outcolname.name"
-msgstr ""
+msgstr "Όνομα στήλης εξόδου"
 
 msgid "_spec.parameters.outcolname.placeholder"
-msgstr ""
+msgstr "(προαιρετικό)"
 
 #: calculate.py:40
 msgid "badParam.single_value_row.tooSmall"
@@ -132,3 +133,4 @@ msgstr ""
 #: calculate.py:228
 msgid "badData.percent_of_column_sum.sumIsZero"
 msgstr ""
+
