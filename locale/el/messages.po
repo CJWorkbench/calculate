@@ -118,19 +118,23 @@ msgstr "(προαιρετικό)"
 msgid "badParam.single_value_row.tooSmall"
 msgstr ""
 
+#: calculate.py:40
+msgid "badParam.single_value_row.tooSmall"
+msgstr "Ο αριθμός σειράς δεν μπορεί να είναι μικρότερος από 1"
+
 #: calculate.py:45
 msgid "badParam.single_value_row.tooBig"
-msgstr ""
+msgstr "Ο αριθμός σειράς δεν μπορεί να είναι μεγαλύτερος από {limit}"
 
 #: calculate.py:51
 msgid "badParam.single_value_col.missing"
-msgstr ""
+msgstr "Επιλέξτε τη στήλη της τιμής κελιού"
 
 #: calculate.py:56
 msgid "badParam.single_value_col.notANumber"
-msgstr ""
+msgstr "Το επιλεγμένο κελί δεν περιέχει αριθμό"
 
 #: calculate.py:228
 msgid "badData.percent_of_column_sum.sumIsZero"
-msgstr ""
+msgstr "Το άθροισμα της στήλης είναι 0."
 
