@@ -1,13 +1,12 @@
 import unittest
-from collections import namedtuple
-
-import numpy as np
-import pandas as pd
-from cjwmodule.testing.i18n import i18n_message
-from pandas.api.types import is_numeric_dtype
-from pandas.testing import assert_frame_equal
+from typing import NamedTuple, Optional
 
 import calculate
+import numpy as np
+import pandas as pd
+from cjwmodule.testing.i18n import cjwmodule_i18n_message, i18n_message
+from pandas.api.types import is_numeric_dtype
+from pandas.testing import assert_frame_equal
 
 DefaultParams = {
     "operation": "add",
@@ -29,10 +28,17 @@ def P(**kwargs):
     return {**DefaultParams, **kwargs}
 
 
-Column = namedtuple("Column", ("name", "type", "format"))
+class Column(NamedTuple):
+    name: str
+    type: str
+    format: Optional[str]
 
 
-def render(table, params, input_columns=None):
+class Settings(NamedTuple):
+    MAX_BYTES_PER_COLUMN_NAME: int = 120
+
+
+def render(table, params, *, settings=Settings(), input_columns=None):
     """
     calculate.render() helper that automatically adds input_columns to
     arguments if they aren't specified..
@@ -49,7 +55,9 @@ def render(table, params, input_columns=None):
 
         input_columns = {c: _infer_input_column(table[c]) for c in table.columns}
 
-    return calculate.render(table, params, input_columns=input_columns)
+    return calculate.render(
+        table, params, settings=settings, input_columns=input_columns
+    )
 
 
 class MigrateParamsTest(unittest.TestCase):
@@ -339,7 +347,7 @@ class RenderTest(unittest.TestCase):
                 single_value_row=2,
                 single_value_col="d",
             ),
-            {
+            input_columns={
                 "b": Column("b", "number", "{:,.2f}"),
                 "c": Column("c", "number", "{:,.1%}"),
                 "d": Column("d", "number", "{:,}"),
@@ -368,7 +376,7 @@ class RenderTest(unittest.TestCase):
                 single_value_row=2,
                 single_value_col="s",
             ),
-            {
+            input_columns={
                 "b": Column("b", "number", "{:,.2f}"),
                 "c": Column("c", "number", "{:,.1%}"),
                 "s": Column("s", "text", ""),
@@ -389,7 +397,7 @@ class RenderTest(unittest.TestCase):
                 single_value_row=2,
                 single_value_col="",
             ),
-            {
+            input_columns={
                 "b": Column("b", "number", "{:,.2f}"),
                 "c": Column("c", "number", "{:,.1%}"),
                 "d": Column("d", "number", "{:,}"),
@@ -410,7 +418,7 @@ class RenderTest(unittest.TestCase):
                 single_value_row=2,
                 single_value_col="d",
             ),
-            {
+            input_columns={
                 "b": Column("b", "number", "{:,.2f}"),
                 "c": Column("c", "number", "{:,.1%}"),
                 "d": Column("d", "number", "{:,}"),
@@ -471,7 +479,7 @@ class RenderTest(unittest.TestCase):
         result = render(
             pd.DataFrame({"a": [1, 2], "b": [2, np.nan]}),
             P(operation="subtract", col1="a", col2="b", outcolname="X"),
-            {
+            input_columns={
                 "a": Column("a", "number", "{:,.2f}"),
                 "b": Column("b", "number", "{:.1%}"),
             },
@@ -492,7 +500,7 @@ class RenderTest(unittest.TestCase):
         result = render(
             pd.DataFrame({"A": [1, -2, 3, -4], "B": [0, 0, 1, np.nan]}),
             P(operation="divide", col1="A", col2="B", outcolname="X"),
-            {
+            input_columns={
                 "A": Column("A", "number", "{:,.2f}"),
                 "B": Column("B", "number", "{:.1%}"),
             },
@@ -551,7 +559,10 @@ class RenderTest(unittest.TestCase):
         result = render(
             table,
             P(operation="percent_multiply", col1="a", col2="c"),
-            {"a": Column("a", "number", "{:,}"), "c": Column("c", "number", "{:,}")},
+            input_columns={
+                "a": Column("a", "number", "{:,}"),
+                "c": Column("c", "number", "{:,}"),
+            },
         )
         expected = table.copy()
         expected["a percent of c"] = [0.06 * 1.6, np.nan]
@@ -563,7 +574,10 @@ class RenderTest(unittest.TestCase):
         result = render(
             table,
             P(operation="percent_multiply", col1="b", col2="c"),
-            {"b": Column("b", "number", "{:,.1%}"), "c": Column("c", "number", "{:,}")},
+            input_columns={
+                "b": Column("b", "number", "{:,.1%}"),
+                "c": Column("c", "number", "{:,}"),
+            },
         )
         expected = table.copy()
         expected["b percent of c"] = [0.06 * 1.6, np.nan]
@@ -614,6 +628,28 @@ class RenderTest(unittest.TestCase):
         )
         self.assertEqual(
             result, i18n_message("badData.percent_of_column_sum.sumIsZero"),
+        )
+
+    def test_truncate_result_column_name(self):
+        result = render(
+            pd.DataFrame({"A A A": [1], "A A B": [2]}),
+            P(operation="divide", col1="A A A", col2="A A B"),
+            settings=Settings(MAX_BYTES_PER_COLUMN_NAME=5),
+        )
+        expected = pd.DataFrame({"A A A": [1], "A A B": [2], "A A 2": [0.5]})
+        assert_frame_equal(result["dataframe"], expected)
+        self.assertEqual(
+            result["errors"],
+            [
+                cjwmodule_i18n_message(
+                    "util.colnames.warnings.truncated",
+                    {"n_columns": 1, "first_colname": "A A 2", "n_bytes": 5},
+                ),
+                cjwmodule_i18n_message(
+                    "util.colnames.warnings.numbered",
+                    {"n_columns": 1, "first_colname": "A A 2"},
+                ),
+            ],
         )
 
 

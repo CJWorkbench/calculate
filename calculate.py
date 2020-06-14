@@ -5,6 +5,7 @@ from typing import Any, Callable, Dict, List, Optional
 import numpy as np
 import pandas as pd
 from cjwmodule import i18n
+from cjwmodule.util.colnames import gen_unique_clean_colnames_and_warn
 
 
 @dataclass
@@ -67,37 +68,33 @@ class MulticolumnOp:
             return params["single_value_constant"]
 
     def render(self, table, params, input_columns) -> Dict[str, Any]:
+        colnames = params["colnames"]
+        if not colnames:
+            return None, None  # waiting for parameter, do nothing
+
+        columns = [input_columns[c] for c in colnames]
         extra_scalar = (
             self.agg in {"sum", "product"} and params["single_value_selector"] != "none"
         )
-
-        colnames = params["colnames"]
-        if not colnames:
-            return table  # waiting for paramter, do nothing
-
-        columns = [input_columns[c] for c in colnames]
         if len(columns) == 1 and not extra_scalar:
             # need at least two columns to operate, unless we are adding
             # another value
-            return table
+            return None, None  # waiting for parameter, do nothing
 
-        if params["outcolname"]:
-            newcolname = params["outcolname"]
-        else:
-            newcolname = self.default_result_column_name(colnames)
-        table[newcolname] = table[colnames].agg(self.agg, axis=1)
+        series = table[colnames].agg(self.agg, axis=1)
+        series.name = self.default_result_column_name(colnames)
 
         # Optional add/multiply all rows by a scalar
         if extra_scalar:
             val = self._get_single_value(table, params)
             if isinstance(val, i18n.I18nMessage):
-                return val  # error essage
+                return val, None  # error essage
             if self.agg == "sum":
-                table[newcolname] += val
+                series += val
             else:
-                table[newcolname] *= val
+                series *= val
 
-        return {"dataframe": table, "column_formats": {newcolname: columns[0].format}}
+        return series, columns[0].format
 
 
 @dataclass
@@ -118,24 +115,21 @@ class BinaryOp:
 
     def render(self, table, params, input_columns) -> Dict[str, Any]:
         if not params["col1"] or not params["col2"]:
-            return table  # waiting for parameter -- no-op
+            return None, None  # waiting for parameter -- no-op
 
         col1 = input_columns[params["col1"]]
         col2 = input_columns[params["col2"]]
 
-        if params["outcolname"]:
-            newcolname = params["outcolname"]
-        else:
-            newcolname = self.default_result_column_name(col1.name, col2.name)
         if len(signature(self.fn).parameters) == 2:
-            table[newcolname] = self.fn(table[col1.name], table[col2.name])
+            series = self.fn(table[col1.name], table[col2.name])
         else:
-            table[newcolname] = self.fn(
+            series = self.fn(
                 table[col1.name],
                 table[col2.name],
                 input_columns[col1.name].format,
                 input_columns[col2.name].format,
             )
+        series.name = self.default_result_column_name(col1.name, col2.name)
 
         if self.override_result_column_format:
             newcolformat = self.override_result_column_format(
@@ -144,7 +138,7 @@ class BinaryOp:
         else:
             newcolformat = col1.format
 
-        return {"dataframe": table, "column_formats": {newcolname: newcolformat}}
+        return series, newcolformat
 
 
 @dataclass
@@ -168,27 +162,16 @@ class UnaryOp:
 
     def render(self, table, params, input_columns) -> Dict[str, Any]:
         if not params["col1"]:
-            return table  # waiting for parameter -- no-op
+            return None, None  # waiting for parameter -- no-op
 
         col1 = params["col1"]
+        series = self.fn(table[col1])
 
-        if params["outcolname"]:
-            newcolname = params["outcolname"]
-        else:
-            newcolname = self.default_result_column_name(col1)
-        result = self.fn(table[col1])
+        if isinstance(series, i18n.I18nMessage):
+            return series, None  # error message
 
-        if isinstance(result, i18n.I18nMessage):
-            return result  # error message
-
-        table[newcolname] = result
-
-        return {
-            "dataframe": table,
-            "column_formats": {
-                newcolname: self.override_result_column_format or col1.format
-            },
-        }
+        series.name = self.default_result_column_name(col1)
+        return series, (self.override_result_column_format or col1.format)
 
 
 PercentFormat = "{:,.1%}"
@@ -235,9 +218,31 @@ Operations = {
 }
 
 
-def render(table, params, *, input_columns):
+def render(table, params, *, input_columns, settings):
     operation = Operations[params["operation"]]
-    return operation.render(table, params, input_columns)
+    series_or_error, format = operation.render(table, params, input_columns)
+
+    if series_or_error is None:
+        return table  # Waiting for parameter -- no-op
+    elif isinstance(series_or_error, pd.Series):
+        if params["outcolname"]:
+            colname = params["outcolname"]
+            errors = []
+        else:
+            colnames, errors = gen_unique_clean_colnames_and_warn(
+                [series_or_error.name],
+                existing_names=list(input_columns.keys()),
+                settings=settings,
+            )
+            colname = colnames[0]
+        table[colname] = series_or_error
+        return {
+            "dataframe": table,
+            "errors": errors,
+            "column_formats": {colname: format},
+        }
+    else:
+        return series_or_error
 
 
 def _migrate_params_v0_to_v1(params):
